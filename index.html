@@ -197,9 +197,8 @@
     </div>
 
     <script>
-        // === API KEY FIXED ===
-        // Your new valid API key is placed here.
-        const USER_API_KEY = "AIzaSyAidLM9CwbJDmeSuIEnlnuYJV4PG3W2gY8"; 
+        // === API KEY FIXED: Use empty string. The environment provides the key automatically. ===
+        const USER_API_KEY = "";
         
         // --- Global State for Preloading ---
         let preloadedAudio = null;
@@ -290,7 +289,7 @@
 
             const userPrompt = `Say in a confident, informative voice: ${profileBioText}`;
             
-            // Constructs the API URL, including the user's key
+            // Constructs the API URL. We rely on the environment to handle the key if it's an empty string.
             let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${USER_API_KEY}`;
 
             const payload = {
@@ -316,7 +315,7 @@
                     if (!response.ok) {
                         const errorBody = await response.json();
                         if (response.status === 400 || response.status === 403) {
-                             throw new Error(`API status ${response.status}: Key Rejected. Please check if your key is still active.`);
+                             throw new Error(`API status ${response.status}: Key Rejected or Bad Request. Check console for details.`);
                         } else {
                             throw new Error(`API status ${response.status}: ${errorBody.error?.message || 'Unknown API Error'}`);
                         }
@@ -326,7 +325,8 @@
                     const part = result?.candidates?.[0]?.content?.parts?.[0];
                     const audioData = part?.inlineData?.data;
                     const mimeType = part?.inlineData?.mimeType;
-
+                    
+                    // The model returns audio/L16. Ensure we check for L16 data.
                     if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
                         const sampleRate = 24000;
                         const pcmData = base64ToArrayBuffer(audioData);
@@ -345,7 +345,7 @@
                         showMessage('Audio Introduction Ready! Click to play.', false);
                         return; // Success, exit loop
                     } else {
-                        throw new Error("Invalid audio response format received.");
+                        throw new Error("Invalid audio response format received. Mime type was not audio/L16.");
                     }
                 } catch (error) {
                     console.error(`TTS Preload attempt ${attempt + 1} failed:`, error.message);
@@ -376,7 +376,7 @@
                     document.getElementById('message-box').classList.add('opacity-0', 'pointer-events-none');
                 };
             } else {
-                showMessage('Audio is still loading or key is invalid. Please check the status message.', true);
+                showMessage('Audio is still loading or a critical error occurred during preloading. Please check the console.', true);
             }
         }
 
