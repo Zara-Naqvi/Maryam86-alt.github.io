@@ -62,6 +62,14 @@
         #video-link:hover .bg-gray-500 {
             background-color: #4a5568;
         }
+
+        /* Spinning animation for loading */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin 3s linear infinite;
+        }
     </style>
 </head>
 <body class="p-4 sm:p-8 flex justify-center items-start">
@@ -79,11 +87,21 @@
             
             <!-- Video Play Icon Link (Now functional) -->
             <a href="#" id="video-link" class="flex items-center w-24 sm:w-32 mr-4 justify-end cursor-pointer">
-                <!-- SVG Play Icon -->
-                <svg class="w-6 h-6 text-gray-700 order-2 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.799v4.394a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+                
+                <!-- Loading/Play Icon Container -->
+                <div id="video-icon-container" class="order-2 transition-colors duration-200">
+                    <!-- Default Play Icon (Visible when audio is ready) -->
+                    <svg id="play-icon" class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.799v4.394a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <!-- Loading Spinner (Visible while audio is pre-loading) -->
+                    <svg id="loading-spinner" class="hidden w-6 h-6 text-gray-500 animate-spin-slow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+
                 <!-- Horizontal Line -->
                 <div class="flex-grow h-px bg-gray-500 order-1 mr-2 transition-colors duration-200"></div>
             </a>
@@ -149,8 +167,16 @@
     </div>
 
     <script>
+        // --- Global State for Preloading ---
+        let preloadedAudio = null;
+        let isAudioReady = false;
+        
+        // DOM Elements
+        const videoLink = document.getElementById('video-link');
+        const playIcon = document.getElementById('play-icon');
+        const loadingSpinner = document.getElementById('loading-spinner');
+
         // --- TTS Helper Functions ---
-        // Converts a base64 string to an ArrayBuffer
         function base64ToArrayBuffer(base64) {
             const binaryString = atob(base64);
             const len = binaryString.length;
@@ -161,20 +187,17 @@
             return bytes.buffer;
         }
 
-        // Converts 16-bit PCM audio data to a playable WAV Blob
         function pcmToWav(pcm16, sampleRate = 24000) {
             const numChannels = 1;
             const bitsPerSample = 16;
             const blockAlign = numChannels * (bitsPerSample / 8);
             const byteRate = sampleRate * blockAlign;
-            const dataSize = pcm16.length * 2; // 2 bytes per sample
+            const dataSize = pcm16.length * 2; 
 
             const buffer = new ArrayBuffer(44 + dataSize);
             const view = new DataView(buffer);
 
             let offset = 0;
-
-            // Write RIFF header
             function writeString(s) {
                 for (let i = 0; i < s.length; i++) {
                     view.setUint8(offset++, s.charCodeAt(i));
@@ -183,66 +206,61 @@
             writeString('RIFF');
             view.setUint32(offset, 36 + dataSize, true); offset += 4;
             writeString('WAVE');
-
-            // Write FMT sub-chunk
             writeString('fmt ');
-            view.setUint32(offset, 16, true); offset += 4; // Sub-chunk size
-            view.setUint16(offset, 1, true); offset += 2;  // Audio format (1 = PCM)
+            view.setUint32(offset, 16, true); offset += 4; 
+            view.setUint16(offset, 1, true); offset += 2;  
             view.setUint16(offset, numChannels, true); offset += 2;
             view.setUint32(offset, sampleRate, true); offset += 4;
             view.setUint32(offset, byteRate, true); offset += 4;
             view.setUint16(offset, blockAlign, true); offset += 2;
             view.setUint16(offset, bitsPerSample, true); offset += 2;
-
-            // Write DATA sub-chunk
             writeString('data');
             view.setUint32(offset, dataSize, true); offset += 4;
 
-            // Write PCM data
             for (let i = 0; i < pcm16.length; i++) {
                 view.setInt16(offset, pcm16[i], true);
                 offset += 2;
             }
-
             return new Blob([view], { type: 'audio/wav' });
         }
         // --- End TTS Helper Functions ---
 
         // Simple function to display a status message
-        function showMessage(text) {
+        function showMessage(text, isError = false) {
             const messageBox = document.getElementById('message-box');
             const messageText = document.getElementById('message-text');
 
             messageText.textContent = text;
-            messageBox.classList.remove('opacity-0', 'pointer-events-none');
-            messageBox.classList.add('opacity-100', 'bg-gray-800'); // Ensure visible color
+            messageBox.classList.remove('opacity-0', 'pointer-events-none', 'bg-red-600', 'bg-gray-800');
+            
+            messageBox.classList.add('opacity-100', isError ? 'bg-red-600' : 'bg-gray-800'); 
 
-            // Auto-hide after 3 seconds unless it's a specific instruction
-            if (!text.includes('Playing')) {
+            // Auto-hide after 5 seconds unless it's an error
+            if (!isError) {
                 setTimeout(() => {
                     messageBox.classList.remove('opacity-100');
                     messageBox.classList.add('opacity-0', 'pointer-events-none');
-                }, 3000);
+                }, 5000);
             }
         }
 
-        // Function to call the TTS API and play audio
-        async function playIntroduction() {
-            showMessage('Loading Audio Introduction...');
+        // 1. Function to pre-load the audio when the page loads
+        async function preloadAudioIntroduction() {
+            // Initial UI state: Disable link and show spinner
+            videoLink.classList.add('opacity-50', 'pointer-events-none');
+            playIcon.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
 
-            const userPrompt = "Hello, I am Zaheer Abbas. I am the Deputy IT Manager for Infrastructure at the University of Oxford. Please explore my profile below.";
+            const userPrompt = "Say in a confident, informative voice: Hello, I am Zaheer Abbas. I am the Deputy IT Manager for Infrastructure at the University of Oxford. Please explore my profile below.";
             const apiKey = ""; 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
 
             const payload = {
-                contents: [{
-                    parts: [{ text: userPrompt }]
-                }],
+                contents: [{ parts: [{ text: userPrompt }] }],
                 generationConfig: {
                     responseModalities: ["AUDIO"],
                     speechConfig: {
-                        // Use a professional voice (Kore)
-                        voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } }
+                        voiceConfig: { prebuiltVoiceConfig: { voiceName: "Charon" } }
                     }
                 },
                 model: "gemini-2.5-flash-preview-tts"
@@ -256,9 +274,10 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-
+                    
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        const errorBody = await response.json();
+                        throw new Error(`API status ${response.status}: ${errorBody.error?.message || 'Unknown API Error'}`);
                     }
 
                     const result = await response.json();
@@ -267,36 +286,55 @@
                     const mimeType = part?.inlineData?.mimeType;
 
                     if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
-                        const sampleRate = 24000; // The TTS model uses 24000Hz PCM
+                        const sampleRate = 24000;
                         const pcmData = base64ToArrayBuffer(audioData);
                         const pcm16 = new Int16Array(pcmData);
-
                         const wavBlob = pcmToWav(pcm16, sampleRate);
                         const audioUrl = URL.createObjectURL(wavBlob);
                         
-                        const audio = new Audio(audioUrl);
-                        audio.play();
+                        // Store the ready-to-play Audio object
+                        preloadedAudio = new Audio(audioUrl);
+                        isAudioReady = true;
 
-                        showMessage('Playing introduction... (Volume may need adjustment)');
-                        
-                        audio.onended = () => {
-                             // Hide the message box when playback is complete
-                            document.getElementById('message-box').classList.remove('opacity-100');
-                            document.getElementById('message-box').classList.add('opacity-0', 'pointer-events-none');
-                        };
+                        // Success UI state: Enable link and show play icon
+                        videoLink.classList.remove('opacity-50', 'pointer-events-none');
+                        loadingSpinner.classList.add('hidden');
+                        playIcon.classList.remove('hidden');
+                        showMessage('Audio Introduction Ready!', false);
                         return; // Success, exit loop
                     } else {
-                        throw new Error("Invalid audio response format from API.");
+                        throw new Error("Invalid audio response format received.");
                     }
                 } catch (error) {
-                    console.error(`TTS attempt ${attempt + 1} failed:`, error);
+                    console.error(`TTS Preload attempt ${attempt + 1} failed:`, error.message);
                     if (attempt < maxRetries - 1) {
                         const delay = Math.pow(2, attempt) * 1000;
                         await new Promise(resolve => setTimeout(resolve, delay)); // Exponential backoff
                     } else {
-                        showMessage('Error: Failed to play audio introduction.');
+                        // Final error message after all retries
+                        showMessage(`Audio Preload Failed. The play button is disabled. Error: ${error.message}`, true);
+                        // Keep disabled, but show error state
+                        loadingSpinner.classList.add('hidden');
+                        playIcon.classList.remove('hidden'); // Show static icon to indicate function is over
                     }
                 }
+            }
+        }
+
+        // 2. Function to play the pre-loaded audio instantly on click
+        function playIntroduction() {
+            if (isAudioReady && preloadedAudio) {
+                // Rewind the audio and play instantly
+                preloadedAudio.currentTime = 0;
+                preloadedAudio.play();
+                showMessage('Playing introduction instantly!', false);
+
+                // Re-enable the button once playback finishes
+                preloadedAudio.onended = () => {
+                    showMessage('Playback finished.', false);
+                };
+            } else {
+                showMessage('Audio is not yet ready. Please wait a moment.', true);
             }
         }
 
@@ -322,6 +360,12 @@
         document.getElementById('contact-btn').addEventListener('click', () => {
             showMessage('Initiating Contact Me action...');
         });
+        
+        // --- Initialization: Start preloading the audio as soon as the window loads ---
+        window.onload = function() {
+            preloadAudioIntroduction();
+        };
+
     </script>
 </body>
 </html>
