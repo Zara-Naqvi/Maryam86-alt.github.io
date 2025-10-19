@@ -167,6 +167,14 @@
     </div>
 
     <script>
+        // === USER ACTION REQUIRED ===
+        // To make the TTS function work on your live website (GitHub Pages), 
+        // you MUST replace the placeholder below with your actual Gemini API Key.
+        // Get your key from the Google AI Studio console.
+        const USER_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
+        // If running in the Canvas environment, leave the key as the placeholder, 
+        // and the environment will handle authentication.
+
         // --- Global State for Preloading ---
         let preloadedAudio = null;
         let isAudioReady = false;
@@ -177,7 +185,7 @@
         const loadingSpinner = document.getElementById('loading-spinner');
         const profileBioText = document.getElementById('profile-bio').textContent.replace(/\s+/g, ' ').trim(); // Get text and clean up whitespace
 
-        // --- TTS Helper Functions ---
+        // --- TTS Helper Functions (Same as before) ---
         function base64ToArrayBuffer(base64) {
             const binaryString = atob(base64);
             const len = binaryString.length;
@@ -253,10 +261,15 @@
             loadingSpinner.classList.remove('hidden');
             showMessage('Pre-loading audio introduction (reading full bio)...', false);
 
-            // --- USER FIX: Use the full profile summary text for the TTS prompt ---
             const userPrompt = `Say in a confident, informative voice: ${profileBioText}`;
             
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent`;
+            // --- CRITICAL FIX: Include API Key if available, otherwise rely on environment ---
+            let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent`;
+            
+            if (USER_API_KEY && USER_API_KEY !== "YOUR_GEMINI_API_KEY_HERE") {
+                // If the user has provided a key, use it for public deployment
+                apiUrl += `?key=${USER_API_KEY}`;
+            }
 
             const payload = {
                 contents: [{ parts: [{ text: userPrompt }] }],
@@ -315,7 +328,7 @@
                         await new Promise(resolve => setTimeout(resolve, delay)); // Exponential backoff
                     } else {
                         // Final error message after all retries
-                        showMessage(`Audio Preload Failed. The play button is disabled. Error: ${error.message}`, true);
+                        showMessage(`Audio Preload Failed on your live site. Please ensure your API key is set in the code. Error: ${error.message}`, true);
                         loadingSpinner.classList.add('hidden');
                         playIcon.classList.remove('hidden'); 
                     }
@@ -366,6 +379,8 @@
         
         // --- Initialization: Start preloading the audio as soon as the window loads ---
         window.onload = function() {
+            // Note: This function will run immediately, but if your API key is missing
+            // the error message will be shown after a short delay.
             preloadAudioIntroduction();
         };
 
