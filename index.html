@@ -128,7 +128,7 @@
 
         <!-- 4. About Section (The main card) -->
         <div class="soft-card p-6 sm:p-10 rounded-3xl mx-auto max-w-3xl mb-12">
-            <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
+            <p id="profile-bio" class="text-gray-700 text-sm sm:text-base leading-relaxed">
                 Hello, I am <strong>Zaheer Abbas</strong>. As a seasoned Deputy IT Manager for Infrastructure with over 14 years of experience, I leverage my expertise in managing complex IT environments to drive innovation and excellence in higher education and public sectors. With a strong background in <strong>Linux systems, virtualization technologies, and networking</strong>, I excel in leading data center operations, infrastructure planning, and service delivery while prioritizing automation, resilience, and compliance. Currently serving at the <strong>University of Oxford</strong>, I bring technical leadership and strategic vision to the table, supported by professional certifications including PRINCE2, ITIL, RHCSA, and CEH.
             </p>
         </div>
@@ -175,6 +175,7 @@
         const videoLink = document.getElementById('video-link');
         const playIcon = document.getElementById('play-icon');
         const loadingSpinner = document.getElementById('loading-spinner');
+        const profileBioText = document.getElementById('profile-bio').textContent.replace(/\s+/g, ' ').trim(); // Get text and clean up whitespace
 
         // --- TTS Helper Functions ---
         function base64ToArrayBuffer(base64) {
@@ -250,10 +251,12 @@
             videoLink.classList.add('opacity-50', 'pointer-events-none');
             playIcon.classList.add('hidden');
             loadingSpinner.classList.remove('hidden');
+            showMessage('Pre-loading audio introduction (reading full bio)...', false);
 
-            const userPrompt = "Say in a confident, informative voice: Hello, I am Zaheer Abbas. I am the Deputy IT Manager for Infrastructure at the University of Oxford. Please explore my profile below.";
-            const apiKey = ""; 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+            // --- USER FIX: Use the full profile summary text for the TTS prompt ---
+            const userPrompt = `Say in a confident, informative voice: ${profileBioText}`;
+            
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent`;
 
             const payload = {
                 contents: [{ parts: [{ text: userPrompt }] }],
@@ -300,7 +303,7 @@
                         videoLink.classList.remove('opacity-50', 'pointer-events-none');
                         loadingSpinner.classList.add('hidden');
                         playIcon.classList.remove('hidden');
-                        showMessage('Audio Introduction Ready!', false);
+                        showMessage('Audio Introduction Ready! Click to play.', false);
                         return; // Success, exit loop
                     } else {
                         throw new Error("Invalid audio response format received.");
@@ -313,9 +316,8 @@
                     } else {
                         // Final error message after all retries
                         showMessage(`Audio Preload Failed. The play button is disabled. Error: ${error.message}`, true);
-                        // Keep disabled, but show error state
                         loadingSpinner.classList.add('hidden');
-                        playIcon.classList.remove('hidden'); // Show static icon to indicate function is over
+                        playIcon.classList.remove('hidden'); 
                     }
                 }
             }
@@ -327,14 +329,15 @@
                 // Rewind the audio and play instantly
                 preloadedAudio.currentTime = 0;
                 preloadedAudio.play();
-                showMessage('Playing introduction instantly!', false);
+                showMessage('Playing full introduction instantly!', false);
 
-                // Re-enable the button once playback finishes
+                // Hide the message box when playback is complete
                 preloadedAudio.onended = () => {
-                    showMessage('Playback finished.', false);
+                    document.getElementById('message-box').classList.remove('opacity-100');
+                    document.getElementById('message-box').classList.add('opacity-0', 'pointer-events-none');
                 };
             } else {
-                showMessage('Audio is not yet ready. Please wait a moment.', true);
+                showMessage('Audio is still loading. Please wait a few seconds.', true);
             }
         }
 
