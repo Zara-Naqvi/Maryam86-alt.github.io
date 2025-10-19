@@ -30,6 +30,17 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(2px);
         }
+        
+        /* New style for detailed skill cards to match the soft-card aesthetic */
+        .skill-card {
+            @apply soft-card p-6 rounded-3xl transition duration-300 hover:shadow-lg;
+        }
+        
+        /* Style for highlighted headings on the details page (now simpler as per the new layout) */
+        .highlighted-heading {
+            /* Enhanced visibility for the main category headers */
+            @apply text-xl font-bold text-gray-800 pt-6 pb-2;
+        }
 
         .nav-button {
             transition: all 0.2s;
@@ -54,7 +65,7 @@
         }
         
         /* Transition for the video link hover effect */
-        #video-link {
+        #video-link, #skill-audio-icon {
             transition: color 0.2s;
         }
         #video-link:hover .text-gray-700 {
@@ -73,7 +84,6 @@
         }
 
         /* --- MAGICAL REVEAL ANIMATION --- */
-        /* Keyframes for the magical pop-in effect: slight move up and fade/scale in */
         @keyframes reveal-magic {
             0% {
                 opacity: 0;
@@ -85,13 +95,11 @@
             }
         }
 
-        /* Base class for the animation */
         .animate-reveal {
             animation: reveal-magic 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             opacity: 0; /* Start hidden */
         }
 
-        /* Staggered delay classes */
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.3s; }
         .delay-3 { animation-delay: 0.5s; }
@@ -100,94 +108,359 @@
         .delay-6 { animation-delay: 1.1s; }
         .delay-7 { animation-delay: 1.3s; }
 
+        /* Custom list style for Page 2 */
+        .skill-list {
+            list-style: none; /* Removing default disc */
+            padding-left: 0; 
+            line-height: 1.5;
+            margin-top: 0.5rem;
+            font-size: 0.9rem; /* Slightly smaller text for list items */
+        }
+        .skill-list li:before {
+            content: '-';
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+        /* Style for the back to home button */
+        .home-button {
+            background-color: #e5e7eb; /* Gray-200 */
+            color: #1f2937; /* Gray-800 */
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .home-button:hover {
+            background-color: #d1d5db; /* Gray-300 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Specific styles for the two-column layout on the skills page */
+        #skills-content-container {
+            display: grid;
+            grid-template-columns: 1fr; /* Single column on mobile */
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            #skills-content-container {
+                grid-template-columns: 1fr 1fr; /* Two columns on desktop/tablet */
+                gap: 40px;
+            }
+        }
+        
+        .skill-block {
+            /* Adds separation between major skill categories */
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
+        
+        /* New style for the image placeholder blocks to make them centered 
+           and restrict max width for better visual balance (like a paragraph element) */
+        .image-placeholder-block {
+            /* Ensures it's centered and capped in size */
+            @apply w-full max-w-sm mx-auto h-auto rounded-xl shadow-lg border-4 border-gray-200 bg-gray-100 flex items-center justify-center text-gray-500 text-sm italic;
+            min-height: 250px; /* Enforce a minimum height for visibility */
+        }
+        
+        /* Style for the clickable audio icon on the skills page */
+        #skill-audio-icon {
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        #skill-audio-icon:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        .audio-playing {
+            color: #10b981; /* Emerald green for active state */
+            transform: scale(1.1);
+        }
+
     </style>
 </head>
 <body class="p-4 sm:p-8 flex justify-center items-start">
 
-    <!-- Main Content Container -->
+    <!-- Main Content Wrapper -->
     <div class="w-full max-w-4xl text-center">
 
-        <!-- 1. Header Name -->
-        <h1 class="header-name text-7xl sm:text-8xl font-medium text-gray-800 mt-8 mb-4 animate-reveal delay-1">
-            Zaheer Abbas
-        </h1>
+        <!-- ============================================== -->
+        <!-- 1. HOME PAGE CONTENT (Default View) -->
+        <!-- ============================================== -->
+        <div id="home-page" class="w-full">
+            <!-- Header Name -->
+            <h1 class="header-name text-7xl sm:text-8xl font-medium text-gray-800 mt-8 mb-4 animate-reveal delay-1">
+                Zaheer Abbas
+            </h1>
 
-        <!-- 2. Profile Image & Video Icon Container (Flex to align icon and image horizontally) -->
-        <div class="flex justify-center items-center mb-10 animate-reveal delay-2">
-            
-            <!-- Video Play Icon Link (Now functional) -->
-            <a href="#" id="video-link" class="flex items-center w-24 sm:w-32 mr-4 justify-end cursor-pointer">
+            <!-- Profile Image & Video Icon Container (Flex to align icon and image horizontally) -->
+            <div class="flex justify-center items-center mb-10 animate-reveal delay-2">
                 
-                <!-- Loading/Play Icon Container -->
-                <div id="video-icon-container" class="order-2 transition-colors duration-200">
-                    <!-- Default Play Icon (Visible when audio is ready) -->
-                    <svg id="play-icon" class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.799v4.394a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <!-- Loading Spinner (Visible while audio is pre-loading) -->
-                    <svg id="loading-spinner" class="hidden w-6 h-6 text-gray-500 animate-spin-slow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                <!-- Video Play Icon Link -->
+                <a href="#" id="video-link" class="flex items-center w-24 sm:w-32 mr-4 justify-end cursor-pointer">
+                    
+                    <!-- Loading/Play Icon Container -->
+                    <div id="video-icon-container" class="order-2 transition-colors duration-200">
+                        <!-- Default Play Icon -->
+                        <svg id="play-icon" class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.799v4.394a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <!-- Loading Spinner -->
+                        <svg id="loading-spinner" class="hidden w-6 h-6 text-gray-500 animate-spin-slow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+
+                    <!-- Horizontal Line -->
+                    <div class="flex-grow h-px bg-gray-500 order-1 mr-2 transition-colors duration-200"></div>
+                </a>
+
+                <!-- Profile Image Container -->
+                <div class="profile-img-container rounded-full overflow-hidden w-40 h-40">
+                    <img 
+                        src="profile.jpg" 
+                        alt="Zaheer Abbas Profile" 
+                        class="object-cover w-full h-full"
+                        onerror="this.onerror=null;this.src='https://placehold.co/160x160/374151/ffffff?text=Profile+Error';"
+                    >
                 </div>
 
-                <!-- Horizontal Line -->
-                <div class="flex-grow h-px bg-gray-500 order-1 mr-2 transition-colors duration-200"></div>
-            </a>
-
-            <!-- Profile Image Container -->
-            <div class="profile-img-container rounded-full overflow-hidden w-40 h-40">
-                <!-- IMAGE SOURCE UPDATED TO profile.jpg -->
-                <img 
-                    src="profile.jpg" 
-                    alt="Zaheer Abbas Profile" 
-                    class="object-cover w-full h-full"
-                    onerror="this.onerror=null;this.src='https://placehold.co/160x160/374151/ffffff?text=Profile+Error';"
-                >
+                <!-- Placeholder for right side symmetry (empty space) -->
+                <div class="w-24 sm:w-32 ml-4"></div>
             </div>
 
-            <!-- Placeholder for right side symmetry (empty space) -->
-            <div class="w-24 sm:w-32 ml-4"></div>
+            <!-- Job Title -->
+            <h2 class="text-xl sm:text-2xl font-bold tracking-widest text-gray-700 mb-10 animate-reveal delay-3">
+                DEPUTY IT MANAGER FOR INFRASTRUCTURE
+            </h2>
+
+            <!-- About Section (The main card) -->
+            <div class="soft-card p-6 sm:p-10 rounded-3xl mx-auto max-w-3xl mb-12 animate-reveal delay-4">
+                <p id="profile-bio" class="text-gray-700 text-sm sm:text-base leading-relaxed">
+                    Hello, I am <strong>Zaheer Abbas</strong>. As a seasoned Deputy IT Manager for Infrastructure with over 14 years of experience, I leverage my expertise in managing complex IT environments to drive innovation and excellence in higher education and public sectors. With a strong background in <strong>Linux systems, virtualization technologies, and networking</strong>, I excel in leading data center operations, infrastructure planning, and service delivery while prioritizing automation, resilience, and compliance. Currently serving at the <strong>University of Oxford</strong>, I bring technical leadership and strategic vision to the table, supported by professional certifications including PRINCE2, ITIL, RHCSA, and CEH.
+                </p>
+            </div>
+
+            <!-- "Know more about me" Heading -->
+            <h3 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-8 mt-12 animate-reveal delay-5">
+                Know more about me
+            </h3>
+
+            <!-- Navigation Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 sm:gap-6 px-4 mb-16 animate-reveal delay-6">
+                <button id="skills-btn" data-content="skills" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
+                    Key Skills & Tools
+                </button>
+                <button id="certs-btn" data-content="certs" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
+                    Certifications & Trainings
+                </button>
+                <button id="work-btn" data-content="work" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
+                    Work Experience
+                </button>
+                <button id="edu-btn" data-content="education" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
+                    Education
+                </button>
+            </div>
+
+            <!-- Contact Button -->
+            <button id="contact-btn" class="nav-button soft-card text-base font-semibold text-gray-800 py-4 px-12 rounded-full mb-12 animate-reveal delay-7">
+                Contact Me
+            </button>
         </div>
 
-        <!-- 3. Job Title -->
-        <h2 class="text-xl sm:text-2xl font-bold tracking-widest text-gray-700 mb-10 animate-reveal delay-3">
-            DEPUTY IT MANAGER FOR INFRASTRUCTURE
-        </h2>
 
-        <!-- 4. About Section (The main card) -->
-        <div class="soft-card p-6 sm:p-10 rounded-3xl mx-auto max-w-3xl mb-12 animate-reveal delay-4">
-            <p id="profile-bio" class="text-gray-700 text-sm sm:text-base leading-relaxed">
-                Hello, I am <strong>Zaheer Abbas</strong>. As a seasoned Deputy IT Manager for Infrastructure with over 14 years of experience, I leverage my expertise in managing complex IT environments to drive innovation and excellence in higher education and public sectors. With a strong background in <strong>Linux systems, virtualisation technologies, and networking</strong>, I excel in leading data center operations, infrastructure planning, and service delivery while prioritising automation, resilience, and compliance. Currently serving at the <strong>University of Oxford</strong>, I bring technical leadership and strategic vision to the table, supported by professional certifications including PRINCE2, ITIL, RHCSA, and CEH.
-            </p>
+        <!-- ============================================== -->
+        <!-- 2. DETAILS PAGE CONTENT (Hidden by default) -->
+        <!-- ============================================== -->
+        <div id="details-page" class="hidden w-full px-4 sm:px-0 text-left">
+            
+            <header class="flex justify-between items-start mb-8 sm:mb-12">
+                <!-- This title remains and is sufficient -->
+                <h1 id="details-title" class="header-name text-4xl sm:text-5xl font-medium text-gray-800 leading-tight tracking-wider">
+                    KEY SKILLS AND TOOLS
+                </h1>
+                <button id="back-home-btn" class="home-button transition duration-300 flex-shrink-0 mt-2">
+                    <!-- Icon for Home -->
+                    <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Home
+                </button>
+            </header>
+
+            <div id="details-content" class="text-gray-700">
+                
+                <!-- CONTENT FOR KEY SKILLS AND TOOLS -->
+                <div id="skills-content" class="w-full">
+                    
+                    <!-- REMOVED: The redundant large "KEY SKILLS AND TOOLS" heading has been removed here. -->
+                    
+                    <!-- Separator line with play icon -->
+                    <div class="flex items-center mb-10">
+                        <!-- Clickable Audio Icon for Skills List -->
+                        <div id="skill-audio-icon" class="flex items-center w-8 cursor-pointer opacity-70 flex-shrink-0">
+                            <!-- Play Icon (Visual Only) -->
+                            <svg id="skill-play-icon" class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.799v4.394a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+                             <!-- Loading Spinner for Skills Audio -->
+                            <svg id="skill-loading-spinner" class="hidden w-4 h-4 text-gray-500 animate-spin-slow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-grow h-px bg-gray-500 ml-1 mr-4"></div>
+                    </div>
+
+                    <!-- New Two-Column Grid Structure -->
+                    <div id="skills-content-container">
+                        
+                        <!-- LEFT COLUMN CONTENT (Text Block 1, Image 2, Text Block 3, Image 4) -->
+                        <div class="space-y-6">
+
+                            <!-- 1. Leadership & People Management (Text Block) -->
+                            <div class="skill-block">
+                                <h3 class="highlighted-heading">
+                                    <span class="border-b-2 border-gray-400 pb-1">Leadership & People Management</span>
+                                </h3>
+                                <div class="text-sm">
+                                    <p class="font-bold mb-2">Proven leader with expertise in:</p>
+                                    <ul id="list-1" class="skill-list">
+                                        <li>Team leadership and coaching</li>
+                                        <li>Recruitment and onboarding</li>
+                                        <li>Regular $\text{1:1}$s and performance reviews</li>
+                                        <li>Mentoring with personalized skill development plans</li>
+                                        <li>Effective stakeholder and supplier management</li>
+                                        <li>Budget management ($\pounds 300\text{k}$ to $\pounds 500\text{k}$)</li>
+                                        <li>Risk-informed decision-making</li>
+                                        <li>Strategic planning and prioritization (Kanban)</li>
+                                        <li>Incident leadership and problem resolution</li>
+                                        <li>CAB and change approvals</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- 2. UNIX & Platform Operations (Image Placeholder) -->
+                            <div class="skill-block pt-10">
+                                <div class="image-placeholder-block mb-4">
+                                    Image Placeholder: Linux & Virtualization
+                                </div>
+                            </div>
+
+                            <!-- 3. Automation & DevOps / Monitoring & Security (Text Blocks) -->
+                            <div class="skill-block">
+                                <h3 class="highlighted-heading">
+                                    <span class="border-b-2 border-gray-400 pb-1">Automation & DevOps</span>
+                                </h3>
+                                <div class="text-sm mb-4">
+                                    <p class="font-bold mb-2">Configuration Management:</p>
+                                    <ul id="list-3" class="skill-list">
+                                        <li>Configuration management: Uyuni, Salt, Ansible</li>
+                                        <li>Version control: Git</li>
+                                        <li>Load balancing: HAProxy with keepalived</li>
+                                        <li>Infrastructure as code: Configuration as code practices</li>
+                                    </ul>
+                                </div>
+
+                                <h3 class="highlighted-heading">
+                                    <span class="border-b-2 border-gray-400 pb-1">Monitoring, Security & Compliance</span>
+                                </h3>
+                                <div class="text-sm">
+                                    <ul id="list-4" class="skill-list">
+                                        <li>Monitoring tools: Zabbix, Grafana, ELK</li>
+                                        <li>Security tools: Wazuh, auditd, Fail2ban, ModSecurity</li>
+                                        <li>Firewall management: iptables, nftables</li>
+                                        <li>Compliance frameworks: CIS, NIST, SANS</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- 4. Networking, Cloud, Storage & Backup (Image Placeholder) -->
+                            <div class="skill-block pt-10">
+                                <div class="image-placeholder-block mb-4">
+                                    Image Placeholder: Cloud & Storage
+                                </div>
+                            </div>
+
+                        </div> <!-- End Left Column -->
+
+                        <!-- RIGHT COLUMN CONTENT (Image 1, Text Block 2, Image 3, Text Block 4) -->
+                        <div class="space-y-6">
+                            
+                            <!-- 1. Leadership & People Management (Image Placeholder) -->
+                            <div class="skill-block pt-10"> 
+                                <div class="image-placeholder-block">
+                                    Image Placeholder: Team Leadership
+                                </div>
+                            </div>
+
+                            <!-- 2. UNIX & Platform Operations (Text Block) -->
+                            <div class="skill-block">
+                                <h3 class="highlighted-heading">
+                                    <span class="border-b-2 border-gray-400 pb-1">UNIX & Platform Operations</span>
+                                </h3>
+                                <div class="text-sm">
+                                    <p class="font-bold mb-2">Expertise in:</p>
+                                    <ul id="list-2" class="skill-list">
+                                        <li>Linux distributions: RHEL, AlmaLinux, Ubuntu, Debian</li>
+                                        <li>Identity and access management: FreeIPA, LDAP, Kerberos, SSSD</li>
+                                        <li>Web servers: Nginx, Apache</li>
+                                        <li>System administration: systemd, SELinux</li>
+                                        <li>Virtualization: VMware vSphere, Hyper-V</li>
+                                        <li>Scripting and automation: Bash, Python</li>
+                                        <li>Containerization: Docker, $\text{k3s}$</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- 3. Automation & DevOps / Monitoring & Security (Image Placeholder) -->
+                            <div class="skill-block pt-10"> 
+                                <div class="image-placeholder-block">
+                                    Image Placeholder: DevOps Pipeline
+                                </div>
+                            </div>
+
+                            <!-- 4. Networking, Cloud, Storage & Backup (Text Block) -->
+                            <div class="skill-block">
+                                <h3 class="highlighted-heading">
+                                    <span class="border-b-2 border-gray-400 pb-1">Networking & Cloud</span>
+                                </h3>
+                                <div class="text-sm mb-4">
+                                    <ul id="list-5" class="skill-list">
+                                        <li>Network infrastructure: Cisco, HPE Aruba switching</li>
+                                        <li>Firewalls: Palo Alto</li>
+                                        <li>Network services: VLANs, routing, ACLs, DNS, DHCP, IPAM</li>
+                                        <li>Cloud platforms: Azure, AWS, OpenStack</li>
+                                        <li>Network security: $\text{pfSense}$, Mikrotik</li>
+                                    </ul>
+                                </div>
+                                
+                                <h3 class="highlighted-heading">
+                                    <span class="border-b-2 border-gray-400 pb-1">Storage & Backup</span>
+                                </h3>
+                                <div class="text-sm">
+                                    <ul id="list-6" class="skill-list">
+                                        <li>Storage systems: NetApp ONTAP (capacity, snapshots, quotas), NAS platforms</li>
+                                        <li>Backup solutions: Veeam, IBM HFS</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div> <!-- End Right Column -->
+
+                    </div> <!-- End Two-Column Grid -->
+                </div>
+                
+                <!-- Placeholder for other sections (will be populated later) -->
+                <div id="certs-content" class="hidden">
+                    <p class="text-lg text-center py-20 soft-card p-8 rounded-xl">Certifications and Trainings content goes here. Click the Home button to return.</p>
+                </div>
+                <div id="work-content" class="hidden">
+                    <p class="text-lg text-center py-20 soft-card p-8 rounded-xl">Work Experience content goes here. Click the Home button to return.</p>
+                </div>
+                <div id="education-content" class="hidden">
+                    <p class="text-lg text-center py-20 soft-card p-8 rounded-xl">Education content goes here. Click the Home button to return.</p>
+                </div>
+
+            </div>
         </div>
-
-        <!-- 5. "Know more about me" Heading -->
-        <h3 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-8 mt-12 animate-reveal delay-5">
-            Know more about me
-        </h3>
-
-        <!-- 6. Navigation Buttons -->
-        <div class="flex flex-wrap justify-center gap-4 sm:gap-6 px-4 mb-16 animate-reveal delay-6">
-            <button id="skills-btn" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
-                Key Skills & Tools
-            </button>
-            <button id="certs-btn" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
-                Certifications & Trainings
-            </button>
-            <button id="work-btn" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
-                Work Experience
-            </button>
-            <button id="edu-btn" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
-                Education
-            </button>
-        </div>
-
-        <!-- 7. Contact Button -->
-        <button id="contact-btn" class="nav-button soft-card text-base font-semibold text-gray-800 py-4 px-12 rounded-full mb-12 animate-reveal delay-7">
-            Contact Me
-        </button>
 
         <!-- Message Box for simulating alerts and showing status -->
         <div id="message-box" class="fixed bottom-5 right-5 bg-gray-800 text-white p-4 rounded-lg shadow-2xl transition-opacity duration-300 opacity-0 pointer-events-none">
@@ -197,21 +470,51 @@
     </div>
 
     <script>
-        // === API KEY UPDATED: Using the key you provided in the initial prompt. ===
-        const USER_API_KEY = "AIzaSyAidLM9CwbJDmeSuIEnlnuYJV4PG3W2gY8"; 
+        // === API KEY REVERTED: Using empty string to rely on runtime environment injection. ===
+        const USER_API_KEY = ""; 
         
-        // --- Global State for Preloading ---
+        // --- Global State for Page and Preloading ---
         let preloadedAudio = null;
         let isAudioReady = false;
-        
+        let currentPage = 'home'; // State: 'home' or 'details'
+        let skillAudio = null; // To hold the audio object for the skills list
+        let isSkillAudioLoading = false;
+
         // DOM Elements
+        const homePage = document.getElementById('home-page');
+        const detailsPage = document.getElementById('details-page');
+        const detailsTitle = document.getElementById('details-title');
+        
         const videoLink = document.getElementById('video-link');
         const playIcon = document.getElementById('play-icon');
         const loadingSpinner = document.getElementById('loading-spinner');
-        // Get text and clean up whitespace from the bio paragraph for TTS
         const profileBioText = document.getElementById('profile-bio').textContent.replace(/\s+/g, ' ').trim(); 
+        
+        const skillAudioIcon = document.getElementById('skill-audio-icon');
+        const skillPlayIcon = document.getElementById('skill-play-icon');
+        const skillLoadingSpinner = document.getElementById('skill-loading-spinner');
 
-        // --- TTS Helper Functions (Converts raw PCM audio to playable WAV format) ---
+        // --- Content Map for Page 2 ---
+        const contentMap = {
+            'skills': { 
+                title: 'KEY SKILLS AND TOOLS', 
+                elementId: 'skills-content' 
+            },
+            'certs': { 
+                title: 'CERTIFICATIONS & TRAININGS', 
+                elementId: 'certs-content' 
+            },
+            'work': { 
+                title: 'WORK EXPERIENCE', 
+                elementId: 'work-content' 
+            },
+            'education': { 
+                title: 'EDUCATION', 
+                elementId: 'education-content' 
+            }
+        };
+
+        // --- Utility Functions ---
         function base64ToArrayBuffer(base64) {
             const binaryString = atob(base64);
             const len = binaryString.length;
@@ -258,8 +561,7 @@
             }
             return new Blob([view], { type: 'audio/wav' });
         }
-        // --- End TTS Helper Functions ---
-
+        
         // Simple function to display a status message
         function showMessage(text, isError = false) {
             const messageBox = document.getElementById('message-box');
@@ -278,20 +580,90 @@
                 }, 5000);
             }
         }
+        
+        // Generic API Caller with exponential backoff
+        async function callTtsApi(payload, elementToSpin, elementToDisplay) {
+            
+            const maxRetries = 3;
+            // Constructs the API URL
+            let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${USER_API_KEY}`;
+            
+            elementToDisplay.classList.add('hidden');
+            elementToSpin.classList.remove('hidden');
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                         // CRITICAL FIX: Explicitly check response.ok and handle HTTP errors
+                        const errorDetails = await response.text();
+                        console.error(`Attempt ${attempt + 1} failed with HTTP Status ${response.status}:`, errorDetails.substring(0, 200));
+                        throw new Error(`API Request Failed (Status: ${response.status}).`);
+                    }
+
+                    const result = await response.json();
+                    const part = result?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType;
+                    
+                    if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
+                        const sampleRate = 24000;
+                        const pcmData = base64ToArrayBuffer(audioData);
+                        const pcm16 = new Int16Array(pcmData);
+                        const wavBlob = pcmToWav(pcm16, sampleRate);
+                        const audioUrl = URL.createObjectURL(wavBlob);
+                        
+                        elementToSpin.classList.add('hidden');
+                        elementToDisplay.classList.remove('hidden');
+                        
+                        return new Audio(audioUrl); 
+                    } else {
+                        throw new Error("Invalid audio response format received.");
+                    }
+                } catch (error) {
+                    if (attempt < maxRetries - 1) {
+                        const delay = Math.pow(2, attempt) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue; // Skip to the next attempt
+                    } else {
+                         // Final failure, clean up UI state and re-throw error
+                         elementToSpin.classList.add('hidden');
+                         elementToDisplay.classList.remove('hidden');
+                         throw error;
+                    }
+                }
+            }
+            return null;
+        }
+
+
+        // --- Audio Logic (Home Page Bio) ---
 
         // 1. Function to pre-load the audio when the page loads
         async function preloadAudioIntroduction() {
             // Initial UI state: Disable link and show spinner
             videoLink.classList.add('opacity-50', 'pointer-events-none');
-            playIcon.classList.add('hidden');
-            loadingSpinner.classList.remove('hidden');
-            showMessage('Pre-loading audio introduction (reading full bio)...', false);
-
-            const userPrompt = `Say in a confident, informative voice: ${profileBioText}`;
             
-            // Constructs the API URL, including the user's key
-            let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${USER_API_KEY}`;
+            // Do not show a message unless it takes a while to load
+            let timeoutMessage = setTimeout(() => {
+                showMessage('Pre-loading audio introduction (reading full bio)...', false);
+            }, 1000); 
 
+            // Text preparation for pronunciation
+            const speechText = profileBioText
+                .replace(/Deputy IT Manager for Infrastructure/g, "Deputy I. T. Manager for Infrastructure")
+                .replace(/PRINCE2/g, "Prince two")
+                .replace(/ITIL/g, "I. T. I. L.")
+                .replace(/RHCSA/g, "R. H. C. S. A.")
+                .replace(/CEH/g, "C. E. H.");
+                
+            const userPrompt = `Say in a confident, informative voice: ${speechText}`;
+            
             const payload = {
                 contents: [{ parts: [{ text: userPrompt }] }],
                 generationConfig: {
@@ -302,104 +674,217 @@
                 },
                 model: "gemini-2.5-flash-preview-tts"
             };
-
-            const maxRetries = 3;
-            for (let attempt = 0; attempt < maxRetries; attempt++) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    if (!response.ok) {
-                        const errorBody = await response.json();
-                        // Specifically check for bad key status codes
-                        if (response.status === 400 || response.status === 403) {
-                             throw new Error(`API status ${response.status}: Key Rejected or Bad Request. Please ensure the API key is correct and enabled for the TTS model.`);
-                        } else {
-                            throw new Error(`API status ${response.status}: ${errorBody.error?.message || 'Unknown API Error'}`);
-                        }
-                    }
-
-                    const result = await response.json();
-                    const part = result?.candidates?.[0]?.content?.parts?.[0];
-                    const audioData = part?.inlineData?.data;
-                    const mimeType = part?.inlineData?.mimeType;
-                    
-                    // The model returns audio/L16. Ensure we check for L16 data.
-                    if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
-                        const sampleRate = 24000;
-                        const pcmData = base64ToArrayBuffer(audioData);
-                        const pcm16 = new Int16Array(pcmData);
-                        const wavBlob = pcmToWav(pcm16, sampleRate);
-                        const audioUrl = URL.createObjectURL(wavBlob);
-                        
-                        // Store the ready-to-play Audio object
-                        preloadedAudio = new Audio(audioUrl);
-                        isAudioReady = true;
-
-                        // Success UI state: Enable link and show play icon
-                        videoLink.classList.remove('opacity-50', 'pointer-events-none');
-                        loadingSpinner.classList.add('hidden');
-                        playIcon.classList.remove('hidden');
-                        showMessage('Audio Introduction Ready! Click to play.', false);
-                        return; // Success, exit loop
-                    } else {
-                        throw new Error("Invalid audio response format received. Mime type was not audio/L16.");
-                    }
-                } catch (error) {
-                    console.error(`TTS Preload attempt ${attempt + 1} failed:`, error.message);
-                    if (attempt < maxRetries - 1) {
-                        const delay = Math.pow(2, attempt) * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay)); // Exponential backoff
-                    } else {
-                        // Final error message after all retries
-                        showMessage(`Audio Preload Failed. Final error: ${error.message}`, true);
-                        loadingSpinner.classList.add('hidden');
-                        playIcon.classList.remove('hidden'); 
-                    }
+            
+            try {
+                preloadedAudio = await callTtsApi(payload, loadingSpinner, playIcon);
+                if (preloadedAudio) {
+                    isAudioReady = true;
+                    clearTimeout(timeoutMessage);
+                    videoLink.classList.remove('opacity-50', 'pointer-events-none');
+                    showMessage('Audio Introduction Ready! Click to play.', false);
+                } else {
+                    throw new Error("Preload function returned null audio.");
                 }
+            } catch (error) {
+                clearTimeout(timeoutMessage);
+                showMessage('Audio Preload Failed. See console for details.', true);
+                videoLink.classList.remove('opacity-50', 'pointer-events-none'); // Re-enable link if failed
             }
         }
 
         // 2. Function to play the pre-loaded audio instantly on click
         function playIntroduction() {
             if (isAudioReady && preloadedAudio) {
-                // Rewind the audio and play instantly
                 preloadedAudio.currentTime = 0;
                 preloadedAudio.play();
                 showMessage('Playing full introduction instantly!', false);
 
-                // Hide the message box when playback is complete
                 preloadedAudio.onended = () => {
                     document.getElementById('message-box').classList.remove('opacity-100');
                     document.getElementById('message-box').classList.add('opacity-0', 'pointer-events-none');
                 };
             } else {
-                showMessage('Audio is still loading or a critical error occurred during preloading. Please check the console.', true);
+                showMessage('Audio is still loading or a critical error occurred during preloading.', true);
             }
         }
 
 
+        // --- Audio Logic (Skills Page List) ---
+        
+        async function speakAllSkills() {
+            if (isSkillAudioLoading) return; // Prevent multiple clicks while loading
+
+            if (skillAudio && !skillAudio.paused) {
+                // If audio is playing, stop it
+                skillAudio.pause();
+                skillAudio.currentTime = 0;
+                skillAudioIcon.classList.remove('audio-playing');
+                showMessage('Skills list audio stopped.');
+                return;
+            }
+
+            if (skillAudio) {
+                // If already loaded, just play it
+                skillAudio.currentTime = 0;
+                skillAudio.play();
+                skillAudioIcon.classList.add('audio-playing');
+                showMessage('Playing Key Skills and Tools summary.');
+                
+                skillAudio.onended = () => {
+                    skillAudioIcon.classList.remove('audio-playing');
+                };
+                return;
+            }
+            
+            // 1. Gather all written content (H3, P, LI) from the two columns
+            const contentContainer = document.getElementById('skills-content-container');
+            let combinedText = "Here is a summary of my key skills and tools: ";
+
+            // Select all textual elements we want to read, excluding placeholders
+            const textElements = contentContainer.querySelectorAll('.skill-block h3, .skill-block p, .skill-block li');
+
+            textElements.forEach(element => {
+                let text = element.textContent.trim();
+
+                // Skip empty elements or elements that are part of the header, or placeholders
+                if (!text || element.closest('.image-placeholder-block')) return; 
+
+                // Replace LaTeX and abbreviations for better pronunciation
+                text = text.replace(/(\$\d+:\d+\$)/g, "one on one"); 
+                text = text.replace(/(\£\s*\d+\w+\s*to\s*\£\s*\d+\w+)/g, match => match.replace('£', ' ').replace('k', ' thousand pounds to ').replace('k', ' thousand pounds ')); 
+                text = text.replace(/(\£\s*\d+\w+)/g, match => match.replace('£', ' ').replace('k', ' thousand pounds '));
+                text = text.replace(/k3s/g, "K three S");
+                text = text.replace(/pfSense/g, "P F sense");
+                // Remove remaining LaTeX delimiters
+                text = text.replace(/(\$[^$]*\$)/g, (match) => match.replace(/\$/g, ' ')); 
+
+                if (element.tagName === 'H3') {
+                    // Start new section with a strong pause
+                    combinedText += `\n\nSection: ${text}. `; 
+                } else if (element.tagName === 'P') {
+                    // Add text followed by a pause (paragraph)
+                    combinedText += `${text}. `;
+                } else if (element.tagName === 'LI') {
+                    // For list items, use a comma equivalent for flow
+                    combinedText += `${text}, `;
+                }
+            });
+            
+            // Clean up trailing commas before periods
+            combinedText = combinedText.replace(/, \./g, '.');
+
+            // 2. Set loading state
+            isSkillAudioLoading = true;
+            skillAudioIcon.classList.add('opacity-50', 'pointer-events-none');
+            
+            const userPrompt = `Say in an informative and clear voice: ${combinedText}`;
+            showMessage('Generating comprehensive audio for all skill descriptions...', false);
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: { prebuiltVoiceConfig: { voiceName: "Charon" } } 
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+            
+            try {
+                // Use skill-specific elements for UI updates
+                skillAudio = await callTtsApi(payload, skillLoadingSpinner, skillPlayIcon);
+                
+                if (skillAudio) {
+                    skillAudio.play();
+                    skillAudioIcon.classList.add('audio-playing');
+                    showMessage('Skills summary audio ready and playing!', false);
+                    skillAudio.onended = () => {
+                        skillAudioIcon.classList.remove('audio-playing');
+                    };
+                }
+            } catch (error) {
+                // Error handling is inside callTtsApi, just reset state here
+                console.error("Failed to generate skills audio:", error);
+                showMessage('Skills audio generation failed.', true);
+            } finally {
+                isSkillAudioLoading = false;
+                skillAudioIcon.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        // --- Page Switching Logic ---
+        function setView(page) {
+            if (page === 'home') {
+                homePage.classList.remove('hidden');
+                detailsPage.classList.add('hidden');
+                currentPage = 'home';
+                window.scrollTo(0, 0); // Scroll to top of the home page
+                if (skillAudio && !skillAudio.paused) skillAudio.pause(); // Stop skills audio if playing
+                skillAudioIcon.classList.remove('audio-playing');
+            } else if (page === 'details') {
+                homePage.classList.add('hidden');
+                detailsPage.classList.remove('hidden');
+                currentPage = 'details';
+                window.scrollTo(0, 0); // Scroll to top of the new page
+            }
+        }
+
+        function navigateTo(target) {
+            const contentInfo = contentMap[target];
+            if (!contentInfo) {
+                showMessage(`Error: Content target '${target}' not found.`, true);
+                return;
+            }
+
+            // 1. Update Details Page Title
+            detailsTitle.textContent = contentInfo.title;
+
+            // 2. Switch all detail sections off, then switch the target one on
+            Object.values(contentMap).forEach(info => {
+                const element = document.getElementById(info.elementId);
+                if (element) {
+                    element.classList.add('hidden');
+                }
+            });
+
+            const targetElement = document.getElementById(contentInfo.elementId);
+            if (targetElement) {
+                targetElement.classList.remove('hidden');
+            }
+            
+            // 3. Switch the main view
+            setView('details');
+            showMessage(`Displaying: ${contentInfo.title}`);
+        }
+
         // --- Event Listeners ---
+
+        // Home Bio Audio Playback
         document.getElementById('video-link').addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent page jump
+            e.preventDefault(); 
             playIntroduction();
         });
+        
+        // Skills List Audio Playback
+        document.getElementById('skill-audio-icon').addEventListener('click', speakAllSkills);
 
-        document.getElementById('skills-btn').addEventListener('click', () => {
-            showMessage('Navigating to Key Skills & Tools section...');
+
+        // Navigation from Home Page Buttons
+        document.querySelectorAll('#home-page button[data-content]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const target = e.currentTarget.getAttribute('data-content');
+                navigateTo(target);
+            });
         });
-        document.getElementById('certs-btn').addEventListener('click', () => {
-            showMessage('Navigating to Certifications & Trainings section...');
+        
+        // Back to Home Button
+        document.getElementById('back-home-btn').addEventListener('click', () => {
+            setView('home');
+            showMessage('Welcome back to the profile summary!');
         });
-        document.getElementById('work-btn').addEventListener('click', () => {
-            showMessage('Navigating to Work Experience section...');
-        });
-        document.getElementById('edu-btn').addEventListener('click', () => {
-            showMessage('Navigating to Education section...');
-        });
+
+        // Contact Button Placeholder
         document.getElementById('contact-btn').addEventListener('click', () => {
             showMessage('Initiating Contact Me action...');
         });
@@ -407,6 +892,8 @@
         // --- Initialization: Start preloading the audio as soon as the window loads ---
         window.onload = function() {
             preloadAudioIntroduction();
+            // Ensure we start on the home page view
+            setView('home'); 
         };
 
     </script>
