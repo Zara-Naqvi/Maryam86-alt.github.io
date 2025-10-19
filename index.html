@@ -197,8 +197,8 @@
     </div>
 
     <script>
-        // === API KEY FIXED: Use empty string. The environment provides the key automatically. ===
-        const USER_API_KEY = "";
+        // === API KEY UPDATED: Using the key you provided in the initial prompt. ===
+        const USER_API_KEY = "AIzaSyAidLM9CwbJDmeSuIEnlnuYJV4PG3W2gY8"; 
         
         // --- Global State for Preloading ---
         let preloadedAudio = null;
@@ -289,7 +289,7 @@
 
             const userPrompt = `Say in a confident, informative voice: ${profileBioText}`;
             
-            // Constructs the API URL. We rely on the environment to handle the key if it's an empty string.
+            // Constructs the API URL, including the user's key
             let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${USER_API_KEY}`;
 
             const payload = {
@@ -314,8 +314,9 @@
                     
                     if (!response.ok) {
                         const errorBody = await response.json();
+                        // Specifically check for bad key status codes
                         if (response.status === 400 || response.status === 403) {
-                             throw new Error(`API status ${response.status}: Key Rejected or Bad Request. Check console for details.`);
+                             throw new Error(`API status ${response.status}: Key Rejected or Bad Request. Please ensure the API key is correct and enabled for the TTS model.`);
                         } else {
                             throw new Error(`API status ${response.status}: ${errorBody.error?.message || 'Unknown API Error'}`);
                         }
