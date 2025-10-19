@@ -46,6 +46,11 @@
             padding: 2px;
             background-color: white;
         }
+        
+        /* Ensure strong text is visibly bold */
+        .soft-card strong {
+            font-weight: 700;
+        }
     </style>
 </head>
 <body class="p-4 sm:p-8 flex justify-center items-start">
@@ -58,20 +63,23 @@
             Zaheer Abbas
         </h1>
 
-        <!-- 2. Profile Image & Video Icon -->
-        <div class="relative flex flex-col items-center justify-center mb-10">
-            <!-- Video/Play Icon Placeholder -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-full flex items-center mb-4 sm:mb-8 w-48 sm:w-64 -top-10 sm:-top-16">
-                <!-- SVG Play Icon (a simple version of the play icon in the design) -->
-                <svg class="w-6 h-6 text-gray-700 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <!-- 2. Profile Image & Video Icon Container (Flex to align icon and image horizontally) -->
+        <div class="flex justify-center items-center mb-10">
+            
+            <!-- Play Icon Group (Positioned to the left of the image) -->
+            <div class="flex items-center w-24 sm:w-32 mr-4 justify-end">
+                <!-- SVG Play Icon -->
+                <svg class="w-6 h-6 text-gray-700 order-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.799v4.394a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <div class="flex-grow h-px bg-gray-500"></div>
+                <!-- Horizontal Line -->
+                <div class="flex-grow h-px bg-gray-500 order-1 mr-2"></div>
             </div>
 
-            <!-- Profile Image (Using a placeholder image URL for visual fidelity) -->
+            <!-- Profile Image Container -->
             <div class="profile-img-container rounded-full overflow-hidden w-40 h-40">
+                <!-- Using a placeholder image URL for visual fidelity -->
                 <img 
                     src="https://placehold.co/160x160/a3a3a3/ffffff?text=ZA" 
                     alt="Zaheer Abbas Profile" 
@@ -79,6 +87,9 @@
                     onerror="this.onerror=null;this.src='https://placehold.co/160x160/374151/ffffff?text=Profile';"
                 >
             </div>
+
+            <!-- Placeholder for right side symmetry (empty space) -->
+            <div class="w-24 sm:w-32 ml-4"></div>
         </div>
 
         <!-- 3. Job Title -->
@@ -89,7 +100,7 @@
         <!-- 4. About Section (The main card) -->
         <div class="soft-card p-6 sm:p-10 rounded-3xl mx-auto max-w-3xl mb-12">
             <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
-                Hello, I am **Zaheer Abbas**. As a seasoned Deputy IT Manager for Infrastructure with over 14 years of experience, I leverage my expertise in managing complex IT environments to drive innovation and excellence in higher education and public sectors. With a strong background in **Linux systems, virtualization technologies, and networking**, I excel in leading data center operations, infrastructure planning, and service delivery while prioritizing automation, resilience, and compliance. Currently serving at the **University of Oxford**, I bring technical leadership and strategic vision to the table, supported by professional certifications including PRINCE2, ITIL, RHCSA, and CEH.
+                Hello, I am <strong>Zaheer Abbas</strong>. As a seasoned Deputy IT Manager for Infrastructure with over 14 years of experience, I leverage my expertise in managing complex IT environments to drive innovation and excellence in higher education and public sectors. With a strong background in <strong>Linux systems, virtualization technologies, and networking</strong>, I excel in leading data center operations, infrastructure planning, and service delivery while prioritizing automation, resilience, and compliance. Currently serving at the <strong>University of Oxford</strong>, I bring technical leadership and strategic vision to the table, supported by professional certifications including PRINCE2, ITIL, RHCSA, and CEH.
             </p>
         </div>
 
