@@ -154,11 +154,11 @@
             padding-bottom: 20px;
         }
         
-        /* New style for the image placeholder blocks to make them centered 
-           and restrict max width for better visual balance (like a paragraph element) */
+        /* New style for the image container blocks. 
+           Added 'overflow-hidden' to ensure rounded corners on the image. */
         .image-placeholder-block {
-            /* Ensures it's centered and capped in size */
-            @apply w-full max-w-sm mx-auto h-auto rounded-xl shadow-lg border-4 border-gray-200 bg-gray-100 flex items-center justify-center text-gray-500 text-sm italic;
+            /* Ensures it's centered and capped in size, and acts as a frame */
+            @apply w-full max-w-sm mx-auto h-auto rounded-xl shadow-lg border-4 border-gray-200 bg-gray-100 flex items-center justify-center text-gray-500 text-sm italic overflow-hidden;
             min-height: 250px; /* Enforce a minimum height for visibility */
         }
         
@@ -292,8 +292,6 @@
                 <!-- CONTENT FOR KEY SKILLS AND TOOLS -->
                 <div id="skills-content" class="w-full">
                     
-                    <!-- REMOVED: The redundant large "KEY SKILLS AND TOOLS" heading has been removed here. -->
-                    
                     <!-- Separator line with play icon -->
                     <div class="flex items-center mb-10">
                         <!-- Clickable Audio Icon for Skills List -->
@@ -312,7 +310,7 @@
                     <!-- New Two-Column Grid Structure -->
                     <div id="skills-content-container">
                         
-                        <!-- LEFT COLUMN CONTENT (Text Block 1, Image 2, Text Block 3, Image 4) -->
+                        <!-- LEFT COLUMN CONTENT -->
                         <div class="space-y-6">
 
                             <!-- 1. Leadership & People Management (Text Block) -->
@@ -337,10 +335,15 @@
                                 </div>
                             </div>
                             
-                            <!-- 2. UNIX & Platform Operations (Image Placeholder) -->
+                            <!-- 2. UNIX & Platform Operations (Image Block - paragraph2.jpg) -->
                             <div class="skill-block pt-10">
                                 <div class="image-placeholder-block mb-4">
-                                    Image Placeholder: Linux & Virtualization
+                                    <img 
+                                        src="paragraph2.jpg" 
+                                        alt="Linux and Virtualization illustration" 
+                                        class="w-full h-full object-cover" 
+                                        onerror="this.onerror=null;this.closest('.image-placeholder-block').innerHTML='<div class=\'p-4 text-center\'>Image Load Failed: paragraph2.jpg</div>';"
+                                    >
                                 </div>
                             </div>
 
@@ -372,22 +375,32 @@
                                 </div>
                             </div>
                             
-                            <!-- 4. Networking, Cloud, Storage & Backup (Image Placeholder) -->
+                            <!-- 4. Networking, Cloud, Storage & Backup (Image Block - paragraph4.jpg) -->
                             <div class="skill-block pt-10">
                                 <div class="image-placeholder-block mb-4">
-                                    Image Placeholder: Cloud & Storage
+                                    <img 
+                                        src="paragraph4.jpg" 
+                                        alt="Cloud and Storage illustration" 
+                                        class="w-full h-full object-cover" 
+                                        onerror="this.onerror=null;this.closest('.image-placeholder-block').innerHTML='<div class=\'p-4 text-center\'>Image Load Failed: paragraph4.jpg</div>';"
+                                    >
                                 </div>
                             </div>
 
                         </div> <!-- End Left Column -->
 
-                        <!-- RIGHT COLUMN CONTENT (Image 1, Text Block 2, Image 3, Text Block 4) -->
+                        <!-- RIGHT COLUMN CONTENT -->
                         <div class="space-y-6">
                             
-                            <!-- 1. Leadership & People Management (Image Placeholder) -->
+                            <!-- 1. Leadership & People Management (Image Block - paragraph1.jpg) -->
                             <div class="skill-block pt-10"> 
                                 <div class="image-placeholder-block">
-                                    Image Placeholder: Team Leadership
+                                    <img 
+                                        src="paragraph1.jpg" 
+                                        alt="Team Leadership illustration" 
+                                        class="w-full h-full object-cover" 
+                                        onerror="this.onerror=null;this.closest('.image-placeholder-block').innerHTML='<div class=\'p-4 text-center\'>Image Load Failed: paragraph1.jpg</div>';"
+                                    >
                                 </div>
                             </div>
 
@@ -410,10 +423,15 @@
                                 </div>
                             </div>
                             
-                            <!-- 3. Automation & DevOps / Monitoring & Security (Image Placeholder) -->
+                            <!-- 3. Automation & DevOps / Monitoring & Security (Image Block - paragraph3.jpg) -->
                             <div class="skill-block pt-10"> 
                                 <div class="image-placeholder-block">
-                                    Image Placeholder: DevOps Pipeline
+                                    <img 
+                                        src="paragraph3.jpg" 
+                                        alt="DevOps Pipeline illustration" 
+                                        class="w-full h-full object-cover" 
+                                        onerror="this.onerror=null;this.closest('.image-placeholder-block').innerHTML='<div class=\'p-4 text-center\'>Image Load Failed: paragraph3.jpg</div>';"
+                                    >
                                 </div>
                             </div>
 
