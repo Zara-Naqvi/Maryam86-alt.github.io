@@ -621,7 +621,6 @@
                     });
                     
                     if (!response.ok) {
-                        // Improved error logging for the 401 status
                         const errorDetails = await response.text();
                         console.error(`Attempt ${attempt + 1} failed with HTTP Status ${response.status}:`, errorDetails.substring(0, 200));
                         if (response.status === 401) {
@@ -647,7 +646,9 @@
                         
                         return new Audio(audioUrl); 
                     } else {
-                        throw new Error("Invalid audio response format received from API.");
+                        // Log unexpected response structure
+                        console.error("Received unexpected API response structure:", JSON.stringify(result));
+                        throw new Error("Invalid audio response format received from API. Check console for details.");
                     }
                 } catch (error) {
                     if (attempt < maxRetries - 1) {
@@ -673,10 +674,10 @@
             // Initial UI state: Disable link and show spinner
             videoLink.classList.add('opacity-50', 'pointer-events-none');
             
-            // Do not show a message unless it takes a while to load
+            // --- FIX 1: Increased timeout to 3 seconds for message display ---
             let timeoutMessage = setTimeout(() => {
-                showMessage('Pre-loading audio introduction (reading full bio)...', false);
-            }, 1000); 
+                showMessage('Pre-loading audio introduction (reading full bio)... This may take a moment.', false);
+            }, 3000); 
 
             // Text preparation for pronunciation
             const speechText = profileBioText
@@ -707,11 +708,14 @@
                     videoLink.classList.remove('opacity-50', 'pointer-events-none');
                     showMessage('Audio Introduction Ready! Click to play.', false);
                 } else {
-                    throw new Error("Preload function returned null audio.");
+                    throw new Error("Preload function returned null audio (API call failed or returned empty response).");
                 }
             } catch (error) {
                 clearTimeout(timeoutMessage);
-                showMessage(`Audio Preload Failed: ${error.message}`, true);
+                
+                // --- FIX 2: Explicitly log and display the error message ---
+                console.error("CRITICAL AUDIO PRELOAD ERROR:", error);
+                showMessage(`Audio Preload Failed. Critical error: ${error.message}`, true);
                 videoLink.classList.remove('opacity-50', 'pointer-events-none'); // Re-enable link if failed
             }
         }
@@ -728,7 +732,7 @@
                     document.getElementById('message-box').classList.add('opacity-0', 'pointer-events-none');
                 };
             } else {
-                showMessage('Audio is still loading or a critical error occurred during preloading.', true);
+                showMessage('Status: Audio is still loading or a critical error occurred during preloading.', true);
             }
         }
 
