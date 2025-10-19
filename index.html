@@ -31,7 +31,7 @@
             backdrop-filter: blur(2px);
         }
         
-        /* New style for all content blocks on the skills page to ensure clear visual separation and prevent overlap */
+        /* Style for all content blocks on the skills page to ensure clear visual separation and prevent overlap */
         .content-block {
             /* Use a clear white background with a shadow for definition */
             @apply bg-white p-6 rounded-3xl shadow-xl transition duration-300;
@@ -60,13 +60,10 @@
             background-color: white;
         }
         
-        /* Ensure strong text is visibly bold */
-        .soft-card strong {
-            font-weight: 700;
-        }
+        /* NO CUSTOM BOLDING OR HIGHLIGHTING STYLES REMAIN */
         
         /* Transition for the video link hover effect */
-        #video-link, #skill-audio-icon {
+        #video-link, #skill-audio-icon, #work-audio-icon {
             transition: color 0.2s;
         }
         #video-link:hover .text-gray-700 {
@@ -119,9 +116,10 @@
             font-size: 0.9rem; /* Slightly smaller text for list items */
         }
         .skill-list li:before {
-            content: '-';
+            content: '•'; /* Use a simple bullet point */
             margin-right: 0.5rem;
             font-weight: bold;
+            color: #4b5563; /* Gray-600 */
         }
         /* Style for the back to home button */
         .home-button {
@@ -137,14 +135,14 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Specific styles for the two-column layout on the skills page */
-        #skills-content-container {
+        /* Specific styles for the two-column layout on the skills/certs page */
+        #skills-content-container, #certs-content-container {
             display: grid;
             grid-template-columns: 1fr; /* Single column on mobile */
             gap: 20px;
         }
         @media (min-width: 768px) {
-            #skills-content-container {
+            #skills-content-container, #certs-content-container {
                 grid-template-columns: 1fr 1fr; /* Two columns on desktop/tablet */
                 gap: 40px;
             }
@@ -156,7 +154,6 @@
             /* Ensures it's centered and capped in size, and acts as a frame */
             @apply w-full h-auto rounded-xl flex items-center justify-center text-gray-500 text-sm italic overflow-hidden;
             min-height: 250px; /* Enforce a minimum height for visibility */
-            /* Removed unnecessary max-width and mx-auto as the parent .content-block handles padding/sizing */
         }
         .image-placeholder-block img {
              /* Ensure image takes up all available space in its block */
@@ -165,11 +162,11 @@
         }
         
         /* Style for the clickable audio icon on the skills page */
-        #skill-audio-icon {
+        #skill-audio-icon, #work-audio-icon {
             cursor: pointer;
             transition: opacity 0.2s, transform 0.2s;
         }
-        #skill-audio-icon:hover {
+        #skill-audio-icon:hover, #work-audio-icon:hover {
             opacity: 1;
             transform: scale(1.05);
         }
@@ -182,6 +179,14 @@
         #message-box {
             z-index: 1000;
             white-space: nowrap;
+        }
+        
+        /* Custom list style for Work Experience - using a dash for the achievements list */
+        .work-achievements li:before {
+            content: '-';
+            margin-right: 0.5rem;
+            font-weight: bold;
+            color: #4b5563;
         }
 
     </style>
@@ -246,7 +251,7 @@
             <!-- About Section (The main card) -->
             <div class="soft-card p-6 sm:p-10 rounded-3xl mx-auto max-w-3xl mb-12 animate-reveal delay-4">
                 <p id="profile-bio" class="text-gray-700 text-sm sm:text-base leading-relaxed">
-                    Hello, I am <strong>Zaheer Abbas</strong>. As a seasoned Deputy IT Manager for Infrastructure with over 14 years of experience, I leverage my expertise in managing complex IT environments to drive innovation and excellence in higher education and public sectors. With a strong background in <strong>Linux systems, virtualization technologies, and networking</strong>, I excel in leading data center operations, infrastructure planning, and service delivery while prioritizing automation, resilience, and compliance. Currently serving at the <strong>University of Oxford</strong>, I bring technical leadership and strategic vision to the table, supported by professional certifications including PRINCE2, ITIL, RHCSA, and CEH.
+                    Hello, I am Zaheer Abbas. As a seasoned Deputy IT Manager for Infrastructure with over 14 years of experience, I leverage my expertise in managing complex IT environments to drive innovation and excellence in higher education and public sectors. With a strong background in Linux systems, virtualization technologies, and networking, I excel in leading data center operations, infrastructure planning, and service delivery while prioritizing automation, resilience, and compliance. Currently serving at the University of Oxford, I bring technical leadership and strategic vision to the table, supported by professional certifications including PRINCE2, ITIL, RHCSA, and CEH.
                 </p>
             </div>
 
@@ -300,11 +305,11 @@
                 <!-- CONTENT FOR KEY SKILLS AND TOOLS -->
                 <div id="skills-content" class="w-full">
                     
-                    <!-- Separator line with play icon (This will be part of the first animated block) -->
+                    <!-- Separator line with play icon -->
                     <div class="flex items-center mb-10">
                         <!-- Clickable Audio Icon for Skills List -->
                         <div id="skill-audio-icon" class="flex items-center w-8 cursor-pointer opacity-70 flex-shrink-0">
-                            <!-- Play Icon (Visual Only) -->
+                            <!-- Default Play Icon (used when paused/ready) -->
                             <svg id="skill-play-icon" class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.799v4.394a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
                              <!-- Loading Spinner for Skills Audio -->
                             <svg id="skill-loading-spinner" class="hidden w-4 h-4 text-gray-500 animate-spin-slow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -315,7 +320,7 @@
                         <div class="flex-grow h-px bg-gray-500 ml-1 mr-4"></div>
                     </div>
 
-                    <!-- New Two-Column Grid Structure -->
+                    <!-- Two-Column Grid Structure -->
                     <div id="skills-content-container">
                         
                         <!-- LEFT COLUMN CONTENT: space-y-6 provides equal gap between all skill-block divs -->
@@ -331,10 +336,10 @@
                                     <ul id="list-1" class="skill-list">
                                         <li>Team leadership and coaching</li>
                                         <li>Recruitment and onboarding</li>
-                                        <li>Regular $\text{1:1}$s and performance reviews</li>
+                                        <li>Regular 1:1s and performance reviews</li>
                                         <li>Mentoring with personalized skill development plans</li>
                                         <li>Effective stakeholder and supplier management</li>
-                                        <li>Budget management ($\pounds 300\text{k}$ to $\pounds 500\text{k}$)</li>
+                                        <li>Budget management (£300k to £500k)</li>
                                         <li>Risk-informed decision-making</li>
                                         <li>Strategic planning and prioritization (Kanban)</li>
                                         <li>Incident leadership and problem resolution</li>
@@ -417,7 +422,7 @@
                                         <li>System administration: systemd, SELinux</li>
                                         <li>Virtualization: VMware vSphere, Hyper-V</li>
                                         <li>Scripting and automation: Bash, Python</li>
-                                        <li>Containerization: Docker, $\text{k3s}$</li>
+                                        <li>Containerization: Docker, k3s</li>
                                     </ul>
                                 </div>
                             </div>
@@ -430,7 +435,7 @@
                                         alt="DevOps Pipeline illustration" 
                                         class="w-full h-full object-cover" 
                                         onerror="this.onerror=null;this.closest('.image-placeholder-block').innerHTML='<div class=\'p-4 text-center\'>Image Load Failed: paragraph3.jpg</div>';"
-                                    >
+                                >
                                 </div>
                             </div>
 
@@ -445,7 +450,7 @@
                                         <li>Firewalls: Palo Alto</li>
                                         <li>Network services: VLANs, routing, ACLs, DNS, DHCP, IPAM</li>
                                         <li>Cloud platforms: Azure, AWS, OpenStack</li>
-                                        <li>Network security: $\text{pfSense}$, Mikrotik</li>
+                                        <li>Network security: pfSense, Mikrotik</li>
                                     </ul>
                                 </div>
                             </div>
@@ -468,13 +473,161 @@
                     </div> <!-- End Two-Column Grid -->
                 </div>
                 
-                <!-- Placeholder for other sections (will be populated later) -->
+                <!-- CONTENT FOR CERTIFICATIONS AND TRAININGS (Page 3) -->
                 <div id="certs-content" class="hidden">
-                    <p class="text-lg text-center py-20 soft-card p-8 rounded-xl">Certifications and Trainings content goes here. Click the Home button to return.</p>
+                    
+                    <!-- Separator line -->
+                    <div class="flex items-center mb-10">
+                        <!-- Empty div for symmetry of the line start, as there is no audio icon here -->
+                        <div class="w-8 flex-shrink-0"></div> 
+                        <div class="flex-grow h-px bg-gray-500 mr-4"></div>
+                    </div>
+                    
+                    <!-- NEW Two-Column Grid Structure for Certs -->
+                    <div id="certs-content-container" class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        
+                        <!-- LEFT COLUMN: Professional Certifications -->
+                        <div class="space-y-6">
+
+                            <!-- Block 1: Professional Certifications List -->
+                            <div class="skill-block content-block">
+                                <h3 class="highlighted-heading">
+                                    <span class="border-b-2 border-gray-400 pb-1">Professional Certifications</span>
+                                </h3>
+                                <div class="text-sm">
+                                    <p class="font-bold mb-2">Key formal qualifications:</p>
+                                    <ul class="skill-list">
+                                        <li>PRINCE2 Foundation: Project Management</li>
+                                        <li>ITIL Foundation v3: IT Service Management</li>
+                                        <li>RHCSA (Red Hat Certified System Administrator): Linux System Administration</li>
+                                        <li>CEH (Certified Ethical Hacker): Cybersecurity principles</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Block 2: Image Placeholder for Certs -->
+                            <div class="skill-block content-block">
+                                <div class="image-placeholder-block mb-0">
+                                    <img 
+                                        src="cert-image.jpg" 
+                                        alt="Certifications illustration" 
+                                        class="w-full h-full object-cover" 
+                                        onerror="this.onerror=null;this.closest('.image-placeholder-block').innerHTML='<div class=\'p-4 text-center\'>Image Load Failed: cert-image.jpg</div>';"
+                                    >
+                                </div>
+                            </div>
+
+                        </div> <!-- End Left Column -->
+
+                        <!-- RIGHT COLUMN: Specialized Training & Courses -->
+                        <div class="space-y-6">
+
+                            <!-- Block 1: Specialized Training & Courses List -->
+                            <div class="skill-block content-block">
+                                <h3 class="highlighted-heading">
+                                    <span class="border-b-2 border-gray-400 pb-1">Specialized Training & Courses</span>
+                                </h3>
+                                <div class="text-sm">
+                                    <p class="font-bold mb-2">Focused training programs:</p>
+                                    <ul class="skill-list">
+                                        <li>Advanced Linux Administration & Troubleshooting</li>
+                                        <li>VMware vSphere Deployment and Management</li>
+                                        <li>Data Center Operations Management</li>
+                                        <li>Cloud Security Principles (Azure/AWS)</li>
+                                        <li>Network Troubleshooting and Diagnostics (Cisco/Palo Alto)</li>
+                                        <li>Scripting for Automation (Python/Bash)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Block 2: Image Placeholder for Training -->
+                            <div class="skill-block content-block">
+                                <div class="image-placeholder-block mb-0">
+                                    <img 
+                                        src="training-image.jpg" 
+                                        alt="Training illustration" 
+                                        class="w-full h-full object-cover" 
+                                        onerror="this.onerror=null;this.closest('.image-placeholder-block').innerHTML='<div class=\'p-4 text-center\'>Image Load Failed: training-image.jpg</div>';"
+                                    >
+                                </div>
+                            </div>
+
+                        </div> <!-- End Right Column -->
+
+                    </div> <!-- End Grid Structure -->
                 </div>
+                
+                <!-- CONTENT FOR WORK EXPERIENCE (Page 4) -->
                 <div id="work-content" class="hidden">
-                    <p class="text-lg text-center py-20 soft-card p-8 rounded-xl">Work Experience content goes here. Click the Home button to return.</p>
+                    
+                    <!-- Separator line with play icon -->
+                    <div class="flex items-center mb-10">
+                        <!-- Clickable Audio Icon for Work Experience -->
+                        <div id="work-audio-icon" class="flex items-center w-8 cursor-pointer opacity-70 flex-shrink-0">
+                            <!-- Default Play Icon (used when paused/ready) -->
+                            <svg id="work-play-icon" class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.799v4.394a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+                             <!-- Loading Spinner for Work Audio -->
+                            <svg id="work-loading-spinner" class="hidden w-4 h-4 text-gray-500 animate-spin-slow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-grow h-px bg-gray-500 ml-1 mr-4"></div>
+                    </div>
+
+                    <!-- Layout: Image on the right for desktop, content wrapper on the left (and full width on mobile) -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <!-- Main Content Card (Col 1 & 2 on desktop, full width on mobile) -->
+                        <div class="md:col-span-2 space-y-6 order-2 md:order-1">
+                            <!-- We wrap the main card in skill-block for the animation/delay to work -->
+                            <div class="skill-block soft-card p-6 rounded-3xl text-sm leading-relaxed text-gray-700">
+                                
+                                <!-- Deputy IT Manager Role -->
+                                <p class="mb-4">
+                                    I'm Deputy IT Manager for Infrastructure at the University of Oxford's Computer Science Department. I've been in this role since August 2022, and my days are filled with excitement. I lead infrastructure strategy and operations across two datacenters to ensure our systems are running smoothly. I manage a talented team of Linux and Windows system administrators, and we've achieved some amazing things together.
+                                </p>
+
+                                <!-- Background -->
+                                <p class="mb-4">
+                                    <span class="font-bold text-base">A bit about my background</span><br>
+                                    Before joining Oxford, I worked at Harrow College as an IT Support Engineer and Lecturer, where I taught Level 3 Cyber Security and Big Data with a 95% pass rate. Prior to that, I was Deputy Executive Officer at Punjab Safe Cities Authority, where I managed a large-scale datacenter environment and implemented cutting-edge technologies.
+                                </p>
+
+                                <!-- Key Achievements -->
+                                <p class="font-bold text-base mb-2">Some of my key achievements</p>
+                                <ul class="work-achievements skill-list mb-4">
+                                    <li>Migrated production systems from Centos 7 to AlmaLinux 8 with minimal downtime</li>
+                                    <li>Rebuilt monitoring stack using ELK, Zabbix, and Grafana</li>
+                                    <li>Deployed Uyuni with Salt states for automated patching and lifecycle management</li>
+                                    <li>Implemented FreeIPA and Red Hat IDM for identity management and authentication</li>
+                                </ul>
+
+                                <!-- What I do / My Role -->
+                                <p class="font-bold text-base mb-2">What I do</p>
+                                <p>
+                                    My role involves leading infrastructure strategy, managing a team, and overseeing our annual infrastructure budget of £300k - £500k. I'm also responsible for drafting our cyber security strategy and acting as a technical lead for core infrastructure.
+                                </p>
+                                
+                            </div>
+                        </div>
+                        
+                        <!-- Image Container (Col 3 on desktop, full width on mobile) -->
+                        <div class="md:col-span-1 flex justify-center items-start order-1 md:order-2">
+                            <div class="skill-block image-placeholder-block soft-card w-full h-auto rounded-3xl overflow-hidden shadow-xl">
+                                <img 
+                                    src="paragraph5.jpg" 
+                                    alt="Zaheer Abbas working on a laptop in a garden setting" 
+                                    class="w-full h-full object-cover" 
+                                    onerror="this.onerror=null;this.closest('.image-placeholder-block').innerHTML='<div class=\'p-4 text-center\'>Image Load Failed: paragraph5.jpg</div>';"
+                                >
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
+                
+                <!-- CONTENT FOR EDUCATION (Page 5) -->
                 <div id="education-content" class="hidden">
                     <p class="text-lg text-center py-20 soft-card p-8 rounded-xl">Education content goes here. Click the Home button to return.</p>
                 </div>
@@ -494,11 +647,14 @@
         const USER_API_KEY = ""; 
         
         // --- Global State for Page and Preloading ---
-        let preloadedAudio = null;
+        let preloadedAudio = null; // Home page intro
         let isAudioReady = false;
         let currentPage = 'home'; // State: 'home' or 'details'
-        let skillAudio = null; // To hold the audio object for the skills list
+        let skillAudio = null; // Skills list audio
         let isSkillAudioLoading = false;
+        let workAudio = null; // Work experience audio
+        let isWorkAudioLoading = false;
+
 
         // DOM Elements
         const homePage = document.getElementById('home-page');
@@ -514,6 +670,12 @@
         const skillAudioIcon = document.getElementById('skill-audio-icon');
         const skillPlayIcon = document.getElementById('skill-play-icon');
         const skillLoadingSpinner = document.getElementById('skill-loading-spinner');
+        
+        // NEW Work Experience Audio Elements
+        const workAudioIcon = document.getElementById('work-audio-icon');
+        const workPlayIcon = document.getElementById('work-play-icon');
+        const workLoadingSpinner = document.getElementById('work-loading-spinner');
+
 
         // --- Content Map for Page 2 ---
         const contentMap = {
@@ -554,33 +716,33 @@
             const dataSize = pcm16.length * 2; 
 
             const buffer = new ArrayBuffer(44 + dataSize);
-            const view = new DataView(buffer);
+            const dataView = new DataView(buffer);
 
             let offset = 0;
             function writeString(s) {
                 for (let i = 0; i < s.length; i++) {
-                    view.setUint8(offset++, s.charCodeAt(i));
+                    dataView.setUint8(offset++, s.charCodeAt(i));
                 }
             }
             writeString('RIFF');
-            view.setUint32(offset, 36 + dataSize, true); offset += 4;
+            dataView.setUint32(offset, 36 + dataSize, true); offset += 4;
             writeString('WAVE');
             writeString('fmt ');
-            view.setUint32(offset, 16, true); offset += 4; 
-            view.setUint16(offset, 1, true); offset += 2;  
-            view.setUint16(offset, numChannels, true); offset += 2;
-            view.setUint32(offset, sampleRate, true); offset += 4;
-            view.setUint32(offset, byteRate, true); offset += 4;
-            view.setUint16(offset, blockAlign, true); offset += 2;
-            view.setUint16(offset, bitsPerSample, true); offset += 2;
+            dataView.setUint32(offset, 16, true); offset += 4; 
+            dataView.setUint16(offset, 1, true); offset += 2;  
+            dataView.setUint16(offset, numChannels, true); offset += 2;
+            dataView.setUint32(offset, sampleRate, true); offset += 4;
+            dataView.setUint32(offset, byteRate, true); offset += 4;
+            dataView.setUint16(offset, blockAlign, true); offset += 2;
+            dataView.setUint16(offset, bitsPerSample, true); offset += 2;
             writeString('data');
-            view.setUint32(offset, dataSize, true); offset += 4;
+            dataView.setUint32(offset, dataSize, true); offset += 4;
 
             for (let i = 0; i < pcm16.length; i++) {
-                view.setInt16(offset, pcm16[i], true);
+                dataView.setInt16(offset, pcm16[i], true);
                 offset += 2;
             }
-            return new Blob([view], { type: 'audio/wav' });
+            return new Blob([dataView], { type: 'audio/wav' });
         }
         
         // Simple function to display a status message
@@ -602,6 +764,48 @@
             }
         }
         
+        /**
+         * GLOBAL FIX: Stops all playing audio, resets the play position, and updates the UI icons.
+         * This function ensures no audio carries over between page views.
+         */
+        function stopAllAudio() {
+            // Stop Home Intro Audio
+            if (preloadedAudio && !preloadedAudio.paused) {
+                preloadedAudio.pause();
+                preloadedAudio.currentTime = 0;
+            }
+            
+            // Stop Skills List Audio and reset state
+            if (skillAudio && !skillAudio.paused) {
+                skillAudio.pause();
+                skillAudio.currentTime = 0;
+            }
+            // Stop Work Experience Audio and reset state
+            if (workAudio && !workAudio.paused) {
+                workAudio.pause();
+                workAudio.currentTime = 0;
+            }
+
+            // Ensure the visual state is always reset here
+            skillAudioIcon.classList.remove('audio-playing'); 
+            workAudioIcon.classList.remove('audio-playing'); 
+            
+            // Ensure visual icons are reset
+            loadingSpinner.classList.add('hidden');
+            playIcon.classList.remove('hidden');
+            skillLoadingSpinner.classList.add('hidden');
+            skillPlayIcon.classList.remove('hidden');
+            workLoadingSpinner.classList.add('hidden');
+            workPlayIcon.classList.remove('hidden');
+            
+            // Reset loading state just in case
+            isSkillAudioLoading = false;
+            isWorkAudioLoading = false;
+            skillAudioIcon.classList.remove('opacity-50', 'pointer-events-none');
+            workAudioIcon.classList.remove('opacity-50', 'pointer-events-none');
+        }
+
+
         // Generic API Caller with exponential backoff
         async function callTtsApi(payload, elementToSpin, elementToDisplay) {
             
@@ -679,14 +883,15 @@
             }, 3000); 
 
             // Text preparation for pronunciation
-            const speechText = profileBioText
+            let speechText = document.getElementById('profile-bio').textContent.replace(/\s+/g, ' ').trim(); 
+            
+            speechText = speechText
                 .replace(/Deputy IT Manager for Infrastructure/g, "Deputy I. T. Manager for Infrastructure")
                 .replace(/PRINCE2/g, "Prince two")
                 .replace(/ITIL/g, "I. T. I. L.")
                 .replace(/RHCSA/g, "R. H. C. S. A.")
                 .replace(/CEH/g, "C. E. H.");
                 
-            // --- DEBUGGING FIX: Removed speech style instruction from the prompt ---
             const userPrompt = speechText;
             
             const payload = {
@@ -723,6 +928,9 @@
         // 2. Function to play the pre-loaded audio instantly on click
         function playIntroduction() {
             if (isAudioReady && preloadedAudio) {
+                // Stop any other audio just in case
+                stopAllAudio();
+                
                 preloadedAudio.currentTime = 0;
                 preloadedAudio.play();
                 showMessage('Playing full introduction instantly!', false);
@@ -740,68 +948,76 @@
         // --- Audio Logic (Skills Page List) ---
         
         async function speakAllSkills() {
-            if (isSkillAudioLoading) return; // Prevent multiple clicks while loading
+            const isVisuallyPlaying = skillAudioIcon.classList.contains('audio-playing');
 
-            if (skillAudio && !skillAudio.paused) {
-                // If audio is playing, stop it
-                skillAudio.pause();
-                skillAudio.currentTime = 0;
+            // 1. **STOP/PAUSE LOGIC (NEW, HIGHER RELIABILITY):**
+            if (isVisuallyPlaying) {
+                if (skillAudio) {
+                    skillAudio.pause();
+                    skillAudio.currentTime = 0;
+                }
                 skillAudioIcon.classList.remove('audio-playing');
-                showMessage('Skills list audio stopped.');
-                return;
+                showMessage('Skills list audio **paused** and reset.');
+                return; 
             }
-
-            if (skillAudio) {
-                // If already loaded, just play it
-                skillAudio.currentTime = 0;
+            
+            // 2. RESUME/REPLAY LOGIC
+            if (skillAudio && skillAudio.paused) {
                 skillAudio.play();
                 skillAudioIcon.classList.add('audio-playing');
-                showMessage('Playing Key Skills and Tools summary.');
-                
+                showMessage('Skills list audio **resumed** playing.');
+
                 skillAudio.onended = () => {
                     skillAudioIcon.classList.remove('audio-playing');
                 };
+                return; 
+            }
+
+            // 3. BLOCKED/LOADING LOGIC
+            if (isSkillAudioLoading) {
+                showMessage('Audio is currently being generated. Please wait...', false);
                 return;
             }
             
-            // 1. Gather all written content (H3, P, LI) from the two columns
+            // --- GENERATION LOGIC ---
+
+            // Stop other audio playback
+            stopAllAudio();
+            
             const contentContainer = document.getElementById('skills-content-container');
             let combinedText = "Here is a summary of my key skills and tools: ";
 
-            // Select all textual elements we want to read, excluding placeholders
             const textElements = contentContainer.querySelectorAll('.skill-block h3, .skill-block p, .skill-block li');
 
             textElements.forEach(element => {
                 let text = element.textContent.trim();
 
-                // Skip empty elements or elements that are part of the header, or placeholders
                 if (!text || element.closest('.image-placeholder-block')) return; 
 
-                // Replace LaTeX and abbreviations for better pronunciation
-                text = text.replace(/(\$\d+:\d+\$)/g, "one on one"); 
+                // Replace abbreviations for better pronunciation
+                text = text.replace(/1:1s/g, "one on one meetings"); 
                 text = text.replace(/(\£\s*\d+\w+\s*to\s*\£\s*\d+\w+)/g, match => match.replace('£', ' ').replace('k', ' thousand pounds to ').replace('k', ' thousand pounds ')); 
                 text = text.replace(/(\£\s*\d+\w+)/g, match => match.replace('£', ' ').replace('k', ' thousand pounds '));
                 text = text.replace(/k3s/g, "K three S");
                 text = text.replace(/pfSense/g, "P F sense");
-                // Remove remaining LaTeX delimiters
-                text = text.replace(/(\$[^$]*\$)/g, (match) => match.replace(/\$/g, ' ')); 
+                text = text.replace(/RHEL/g, "Red Hat Enterprise Linux");
+                text = text.replace(/RHCSA/g, "R H C S A");
+                text = text.replace(/CEH/g, "C. E. H.");
+                text = text.replace(/ITIL/g, "I. T. I. L.");
+
 
                 if (element.tagName === 'H3') {
-                    // Start new section with a strong pause
                     combinedText += `\n\nSection: ${text}. `; 
                 } else if (element.tagName === 'P') {
-                    // Add text followed by a pause (paragraph)
                     combinedText += `${text}. `;
                 } else if (element.tagName === 'LI') {
-                    // For list items, use a comma equivalent for flow
                     combinedText += `${text}, `;
                 }
             });
             
-            // Clean up trailing commas before periods
             combinedText = combinedText.replace(/, \./g, '.');
 
-            // 2. Set loading state
+            // 4. Set loading state
             isSkillAudioLoading = true;
             skillAudioIcon.classList.add('opacity-50', 'pointer-events-none');
             
@@ -821,7 +1037,6 @@
             };
             
             try {
-                // Use skill-specific elements for UI updates
                 skillAudio = await callTtsApi(payload, skillLoadingSpinner, skillPlayIcon);
                 
                 if (skillAudio) {
@@ -833,7 +1048,6 @@
                     };
                 }
             } catch (error) {
-                // Error handling is inside callTtsApi, just reset state here
                 console.error("Failed to generate skills audio:", error);
                 showMessage(`Skills audio generation failed: ${error.message}`, true);
             } finally {
@@ -842,12 +1056,124 @@
             }
         }
 
+
+        // --- Audio Logic (Work Experience Page) ---
+        async function speakWorkExperience() {
+            const isVisuallyPlaying = workAudioIcon.classList.contains('audio-playing');
+
+            // 1. **STOP/PAUSE LOGIC**
+            if (isVisuallyPlaying) {
+                if (workAudio) {
+                    workAudio.pause();
+                    workAudio.currentTime = 0;
+                }
+                workAudioIcon.classList.remove('audio-playing');
+                showMessage('Work experience audio **paused** and reset.');
+                return; 
+            }
+            
+            // 2. RESUME/REPLAY LOGIC
+            if (workAudio && workAudio.paused) {
+                workAudio.play();
+                workAudioIcon.classList.add('audio-playing');
+                showMessage('Work experience audio **resumed** playing.');
+                workAudio.onended = () => {
+                    workAudioIcon.classList.remove('audio-playing');
+                };
+                return; 
+            }
+
+            // 3. BLOCKED/LOADING LOGIC
+            if (isWorkAudioLoading) {
+                showMessage('Audio is currently being generated. Please wait...', false);
+                return;
+            }
+            
+            // --- GENERATION LOGIC ---
+
+            // Stop other audio playback
+            stopAllAudio();
+
+            // 4. Gather all text content
+            const contentContainer = document.getElementById('work-content');
+            let combinedText = "My professional experience: ";
+
+            const textElements = contentContainer.querySelectorAll('.skill-block p, .skill-block li');
+
+            textElements.forEach(element => {
+                let text = element.textContent.trim();
+                
+                if (!text || element.closest('.image-placeholder-block')) return; 
+
+                // Replace abbreviations, LaTeX, and currency for better pronunciation
+                text = text.replace(/IT Manager for Infrastructure/g, "I. T. Manager for Infrastructure"); 
+                text = text.replace(/Level 3 Cyber Security/g, "Level three Cyber Security"); 
+                text = text.replace(/95\%/g, "95 percent"); 
+                text = text.replace(/IDM/g, "I. D. M.");
+                text = text.replace(/(\£\s*\d+\w+\s*-\s*\£\s*\d+\w+)/g, match => match.replace('£', ' ').replace('k', ' thousand pounds to ').replace('k', ' thousand pounds ')); 
+                text = text.replace(/ELK/g, "E. L. K.");
+                
+                if (element.tagName === 'P') {
+                    // Check if it's a bold title line, and if so, add extra pause
+                    if (element.querySelector('strong')) {
+                         combinedText += `\n\n${text}. `;
+                    } else {
+                        combinedText += `${text}. `;
+                    }
+                } else if (element.tagName === 'LI') {
+                    combinedText += `${text}, `;
+                }
+            });
+            
+            combinedText = combinedText.replace(/, \./g, '.');
+
+            // 5. Set loading state
+            isWorkAudioLoading = true;
+            workAudioIcon.classList.add('opacity-50', 'pointer-events-none');
+            
+            const userPrompt = combinedText;
+
+            showMessage('Generating audio for Work Experience...', false);
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: { prebuiltVoiceConfig: { voiceName: "Charon" } } 
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+            
+            try {
+                workAudio = await callTtsApi(payload, workLoadingSpinner, workPlayIcon);
+                
+                if (workAudio) {
+                    workAudio.play();
+                    workAudioIcon.classList.add('audio-playing');
+                    showMessage('Work Experience audio ready and playing!', false);
+                    workAudio.onended = () => {
+                        workAudioIcon.classList.remove('audio-playing');
+                    };
+                }
+            } catch (error) {
+                console.error("Failed to generate work experience audio:", error);
+                showMessage(`Work experience audio generation failed: ${error.message}`, true);
+            } finally {
+                isWorkAudioLoading = false;
+                workAudioIcon.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
+
+
         // --- NEW FUNCTION: Trigger Reveal Animation on Detail Page Content ---
         function triggerDetailsAnimation(targetContentElement) {
             // 1. Identify all key elements to animate, including the header
             const animatableElements = [
                 detailsHeader, // The page header (title & back button)
-                ...targetContentElement.querySelectorAll('.skill-block') // All individual blocks in the content
+                // Select all content blocks inside the target element
+                ...targetContentElement.querySelectorAll('.skill-block') 
             ];
             
             // 2. Remove all animation classes to reset the animation state
@@ -857,14 +1183,13 @@
             });
             
             // CRITICAL: Force reflow/repaint to ensure the animation is re-triggered
-            // This reads a property that forces the browser to recalculate styles immediately.
             void detailsPage.offsetHeight; 
 
             // 3. Re-add animation classes with staggered delays
             animatableElements.forEach((el, index) => {
-                // The header gets the first delay (delay-1)
-                // Content blocks follow sequentially
-                const delayClass = `delay-${Math.min(index + 1, 6)}`; 
+                // Adjust delay to start later for the main content blocks after the header
+                const adjustedIndex = index + 1; 
+                const delayClass = `delay-${Math.min(adjustedIndex, 6)}`; 
                 el.classList.add('animate-reveal', delayClass);
             });
         }
@@ -873,13 +1198,15 @@
 
         // --- Page Switching Logic ---
         function setView(page) {
+            // CRITICAL FIX: Stop all audio whenever the view changes (Issue #1)
+            stopAllAudio(); 
+            
             if (page === 'home') {
                 homePage.classList.remove('hidden');
                 detailsPage.classList.add('hidden');
                 currentPage = 'home';
                 window.scrollTo(0, 0); // Scroll to top of the home page
-                if (skillAudio && !skillAudio.paused) skillAudio.pause(); // Stop skills audio if playing
-                skillAudioIcon.classList.remove('audio-playing');
+                
             } else if (page === 'details') {
                 homePage.classList.add('hidden');
                 detailsPage.classList.remove('hidden');
@@ -889,6 +1216,9 @@
         }
 
         function navigateTo(target) {
+            // CRITICAL FIX: Stop all audio before navigating to a new details page
+            stopAllAudio();
+
             const contentInfo = contentMap[target];
             if (!contentInfo) {
                 showMessage(`Error: Content target '${target}' not found.`, true);
@@ -934,8 +1264,11 @@
             playIntroduction();
         });
         
-        // Skills List Audio Playback
+        // Skills List Audio Playback 
         document.getElementById('skill-audio-icon').addEventListener('click', speakAllSkills);
+
+        // Work Experience Audio Playback
+        document.getElementById('work-audio-icon').addEventListener('click', speakWorkExperience);
 
 
         // Navigation from Home Page Buttons
@@ -944,6 +1277,10 @@
                 const target = e.currentTarget.getAttribute('data-content');
                 navigateTo(target);
             });
+            // Ensure the cursor pointer style is visible on the contact button
+            if(button.id === 'contact-btn') {
+                button.style.cursor = 'pointer';
+            }
         });
         
         // Back to Home Button
