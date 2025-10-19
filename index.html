@@ -77,7 +77,7 @@
         <!-- 2. Profile Image & Video Icon Container (Flex to align icon and image horizontally) -->
         <div class="flex justify-center items-center mb-10">
             
-            <!-- Video Play Icon Link (Now clickable) -->
+            <!-- Video Play Icon Link (Now functional) -->
             <a href="#" id="video-link" class="flex items-center w-24 sm:w-32 mr-4 justify-end cursor-pointer">
                 <!-- SVG Play Icon -->
                 <svg class="w-6 h-6 text-gray-700 order-2 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -90,12 +90,12 @@
 
             <!-- Profile Image Container -->
             <div class="profile-img-container rounded-full overflow-hidden w-40 h-40">
-                <!-- Using a placeholder image URL for visual fidelity -->
+                <!-- IMAGE SOURCE UPDATED TO profile.jpg -->
                 <img 
-                    src="https://placehold.co/160x160/a3a3a3/ffffff?text=ZA" 
+                    src="profile.jpg" 
                     alt="Zaheer Abbas Profile" 
                     class="object-cover w-full h-full"
-                    onerror="this.onerror=null;this.src='https://placehold.co/160x160/374151/ffffff?text=Profile';"
+                    onerror="this.onerror=null;this.src='https://placehold.co/160x160/374151/ffffff?text=Profile+Error';"
                 >
             </div>
 
@@ -141,33 +141,170 @@
             Contact Me
         </button>
 
-        <!-- Message Box for simulating alerts -->
+        <!-- Message Box for simulating alerts and showing status -->
         <div id="message-box" class="fixed bottom-5 right-5 bg-gray-800 text-white p-4 rounded-lg shadow-2xl transition-opacity duration-300 opacity-0 pointer-events-none">
-            Action: <span id="message-text"></span>
+            Status: <span id="message-text"></span>
         </div>
 
     </div>
 
     <script>
-        // Simple function to display an action message (since alert() is not allowed)
+        // --- TTS Helper Functions ---
+        // Converts a base64 string to an ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Converts 16-bit PCM audio data to a playable WAV Blob
+        function pcmToWav(pcm16, sampleRate = 24000) {
+            const numChannels = 1;
+            const bitsPerSample = 16;
+            const blockAlign = numChannels * (bitsPerSample / 8);
+            const byteRate = sampleRate * blockAlign;
+            const dataSize = pcm16.length * 2; // 2 bytes per sample
+
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+
+            let offset = 0;
+
+            // Write RIFF header
+            function writeString(s) {
+                for (let i = 0; i < s.length; i++) {
+                    view.setUint8(offset++, s.charCodeAt(i));
+                }
+            }
+            writeString('RIFF');
+            view.setUint32(offset, 36 + dataSize, true); offset += 4;
+            writeString('WAVE');
+
+            // Write FMT sub-chunk
+            writeString('fmt ');
+            view.setUint32(offset, 16, true); offset += 4; // Sub-chunk size
+            view.setUint16(offset, 1, true); offset += 2;  // Audio format (1 = PCM)
+            view.setUint16(offset, numChannels, true); offset += 2;
+            view.setUint32(offset, sampleRate, true); offset += 4;
+            view.setUint32(offset, byteRate, true); offset += 4;
+            view.setUint16(offset, blockAlign, true); offset += 2;
+            view.setUint16(offset, bitsPerSample, true); offset += 2;
+
+            // Write DATA sub-chunk
+            writeString('data');
+            view.setUint32(offset, dataSize, true); offset += 4;
+
+            // Write PCM data
+            for (let i = 0; i < pcm16.length; i++) {
+                view.setInt16(offset, pcm16[i], true);
+                offset += 2;
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+        // --- End TTS Helper Functions ---
+
+        // Simple function to display a status message
         function showMessage(text) {
             const messageBox = document.getElementById('message-box');
             const messageText = document.getElementById('message-text');
 
             messageText.textContent = text;
             messageBox.classList.remove('opacity-0', 'pointer-events-none');
-            messageBox.classList.add('opacity-100');
+            messageBox.classList.add('opacity-100', 'bg-gray-800'); // Ensure visible color
 
-            setTimeout(() => {
-                messageBox.classList.remove('opacity-100');
-                messageBox.classList.add('opacity-0', 'pointer-events-none');
-            }, 3000);
+            // Auto-hide after 3 seconds unless it's a specific instruction
+            if (!text.includes('Playing')) {
+                setTimeout(() => {
+                    messageBox.classList.remove('opacity-100');
+                    messageBox.classList.add('opacity-0', 'pointer-events-none');
+                }, 3000);
+            }
         }
 
-        // Add event listeners for all clickable elements
+        // Function to call the TTS API and play audio
+        async function playIntroduction() {
+            showMessage('Loading Audio Introduction...');
+
+            const userPrompt = "Hello, I am Zaheer Abbas. I am the Deputy IT Manager for Infrastructure at the University of Oxford. Please explore my profile below.";
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: userPrompt }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        // Use a professional voice (Kore)
+                        voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+
+            const maxRetries = 3;
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const part = result?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType;
+
+                    if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
+                        const sampleRate = 24000; // The TTS model uses 24000Hz PCM
+                        const pcmData = base64ToArrayBuffer(audioData);
+                        const pcm16 = new Int16Array(pcmData);
+
+                        const wavBlob = pcmToWav(pcm16, sampleRate);
+                        const audioUrl = URL.createObjectURL(wavBlob);
+                        
+                        const audio = new Audio(audioUrl);
+                        audio.play();
+
+                        showMessage('Playing introduction... (Volume may need adjustment)');
+                        
+                        audio.onended = () => {
+                             // Hide the message box when playback is complete
+                            document.getElementById('message-box').classList.remove('opacity-100');
+                            document.getElementById('message-box').classList.add('opacity-0', 'pointer-events-none');
+                        };
+                        return; // Success, exit loop
+                    } else {
+                        throw new Error("Invalid audio response format from API.");
+                    }
+                } catch (error) {
+                    console.error(`TTS attempt ${attempt + 1} failed:`, error);
+                    if (attempt < maxRetries - 1) {
+                        const delay = Math.pow(2, attempt) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay)); // Exponential backoff
+                    } else {
+                        showMessage('Error: Failed to play audio introduction.');
+                    }
+                }
+            }
+        }
+
+
+        // --- Event Listeners ---
         document.getElementById('video-link').addEventListener('click', (e) => {
             e.preventDefault(); // Prevent page jump
-            showMessage('Playing video introduction...');
+            playIntroduction();
         });
 
         document.getElementById('skills-btn').addEventListener('click', () => {
