@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaheer Abbas | Deputy IT Manager</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Google Fonts: Playfair Display for the name, Inter for everything else -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to apply the specific fonts and aesthetic */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7; /* Very light gray background */
+            min-height: 100vh;
+        }
+
+        .header-name {
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 0.05em;
+        }
+
+        /* Utility for the subtle shadow/glow on cards and buttons */
+        .soft-card {
+            background-color: rgba(220, 220, 220, 0.8); /* Light gray with slight transparency */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(2px);
+        }
+
+        .nav-button {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-button:hover {
+            background-color: rgba(189, 189, 189, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .profile-img-container {
+            /* Mimics the slight shadow/border effect in the original image */
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.8), 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 2px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8 flex justify-center items-start">
+
+    <!-- Main Content Container -->
+    <div class="w-full max-w-4xl text-center">
+
+        <!-- 1. Header Name -->
+        <h1 class="header-name text-7xl sm:text-8xl font-medium text-gray-800 mt-8 mb-4">
+            Zaheer Abbas
+        </h1>
+
+        <!-- 2. Profile Image & Video Icon -->
+        <div class="relative flex flex-col items-center justify-center mb-10">
+            <!-- Video/Play Icon Placeholder -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-full flex items-center mb-4 sm:mb-8 w-48 sm:w-64 -top-10 sm:-top-16">
+                <!-- SVG Play Icon (a simple version of the play icon in the design) -->
+                <svg class="w-6 h-6 text-gray-700 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.799v4.394a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div class="flex-grow h-px bg-gray-500"></div>
+            </div>
+
+            <!-- Profile Image (Using a placeholder image URL for visual fidelity) -->
+            <div class="profile-img-container rounded-full overflow-hidden w-40 h-40">
+                <img 
+                    src="https://placehold.co/160x160/a3a3a3/ffffff?text=ZA" 
+                    alt="Zaheer Abbas Profile" 
+                    class="object-cover w-full h-full"
+                    onerror="this.onerror=null;this.src='https://placehold.co/160x160/374151/ffffff?text=Profile';"
+                >
+            </div>
+        </div>
+
+        <!-- 3. Job Title -->
+        <h2 class="text-xl sm:text-2xl font-bold tracking-widest text-gray-700 mb-10">
+            DEPUTY IT MANAGER FOR INFRASTRUCTURE
+        </h2>
+
+        <!-- 4. About Section (The main card) -->
+        <div class="soft-card p-6 sm:p-10 rounded-3xl mx-auto max-w-3xl mb-12">
+            <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
+                Hello, I am **Zaheer Abbas**. As a seasoned Deputy IT Manager for Infrastructure with over 14 years of experience, I leverage my expertise in managing complex IT environments to drive innovation and excellence in higher education and public sectors. With a strong background in **Linux systems, virtualization technologies, and networking**, I excel in leading data center operations, infrastructure planning, and service delivery while prioritizing automation, resilience, and compliance. Currently serving at the **University of Oxford**, I bring technical leadership and strategic vision to the table, supported by professional certifications including PRINCE2, ITIL, RHCSA, and CEH.
+            </p>
+        </div>
+
+        <!-- 5. "Know more about me" Heading -->
+        <h3 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-8 mt-12">
+            Know more about me
+        </h3>
+
+        <!-- 6. Navigation Buttons -->
+        <div class="flex flex-wrap justify-center gap-4 sm:gap-6 px-4 mb-16">
+            <button id="skills-btn" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
+                Key Skills & Tools
+            </button>
+            <button id="certs-btn" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
+                Certifications & Trainings
+            </button>
+            <button id="work-btn" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
+                Work Experience
+            </button>
+            <button id="edu-btn" class="nav-button soft-card text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 py-3 px-6 rounded-full">
+                Education
+            </button>
+        </div>
+
+        <!-- 7. Contact Button -->
+        <button id="contact-btn" class="nav-button soft-card text-base font-semibold text-gray-800 py-4 px-12 rounded-full mb-12">
+            Contact Me
+        </button>
+
+        <!-- Message Box for simulating alerts -->
+        <div id="message-box" class="fixed bottom-5 right-5 bg-gray-800 text-white p-4 rounded-lg shadow-2xl transition-opacity duration-300 opacity-0 pointer-events-none">
+            Action: <span id="message-text"></span>
+        </div>
+
+    </div>
+
+    <script>
+        // Simple function to display an action message (since alert() is not allowed)
+        function showMessage(text) {
+            const messageBox = document.getElementById('message-box');
+            const messageText = document.getElementById('message-text');
+
+            messageText.textContent = text;
+            messageBox.classList.remove('opacity-0', 'pointer-events-none');
+            messageBox.classList.add('opacity-100');
+
+            setTimeout(() => {
+                messageBox.classList.remove('opacity-100');
+                messageBox.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // Add event listeners to simulate page navigation or actions
+        document.getElementById('skills-btn').addEventListener('click', () => {
+            showMessage('Navigating to Key Skills & Tools section...');
+        });
+        document.getElementById('certs-btn').addEventListener('click', () => {
+            showMessage('Navigating to Certifications & Trainings section...');
+        });
+        document.getElementById('work-btn').addEventListener('click', () => {
+            showMessage('Navigating to Work Experience section...');
+        });
+        document.getElementById('edu-btn').addEventListener('click', () => {
+            showMessage('Navigating to Education section...');
+        });
+        document.getElementById('contact-btn').addEventListener('click', () => {
+            showMessage('Initiating Contact Me action...');
+        });
+    </script>
+</body>
+</html>
