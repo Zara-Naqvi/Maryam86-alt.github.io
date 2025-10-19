@@ -674,7 +674,6 @@
             // Initial UI state: Disable link and show spinner
             videoLink.classList.add('opacity-50', 'pointer-events-none');
             
-            // --- FIX 1: Increased timeout to 3 seconds for message display ---
             let timeoutMessage = setTimeout(() => {
                 showMessage('Pre-loading audio introduction (reading full bio)... This may take a moment.', false);
             }, 3000); 
@@ -687,7 +686,8 @@
                 .replace(/RHCSA/g, "R. H. C. S. A.")
                 .replace(/CEH/g, "C. E. H.");
                 
-            const userPrompt = `Say in a confident, informative voice: ${speechText}`;
+            // --- DEBUGGING FIX: Removed speech style instruction from the prompt ---
+            const userPrompt = speechText;
             
             const payload = {
                 contents: [{ parts: [{ text: userPrompt }] }],
@@ -713,7 +713,7 @@
             } catch (error) {
                 clearTimeout(timeoutMessage);
                 
-                // --- FIX 2: Explicitly log and display the error message ---
+                // Explicitly log and display the error message
                 console.error("CRITICAL AUDIO PRELOAD ERROR:", error);
                 showMessage(`Audio Preload Failed. Critical error: ${error.message}`, true);
                 videoLink.classList.remove('opacity-50', 'pointer-events-none'); // Re-enable link if failed
@@ -805,7 +805,8 @@
             isSkillAudioLoading = true;
             skillAudioIcon.classList.add('opacity-50', 'pointer-events-none');
             
-            const userPrompt = `Say in an informative and clear voice: ${combinedText}`;
+            const userPrompt = combinedText;
+
             showMessage('Generating comprehensive audio for all skill descriptions...', false);
 
             const payload = {
